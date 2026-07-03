@@ -1,12 +1,19 @@
-"""Render data/forecast.json into a self-contained docs/index.html dashboard (GitHub Pages source).
+"""Render data/forecast.json + data/weather_forecast.json into a self-contained
+docs/index.html dashboard (GitHub Pages source).
 
-Shows every Bengaluru monitoring station on a map + sortable list, with per-pollutant
-history/forecast charts for whichever station is selected.
+Shows every Bengaluru air quality station on a map + sortable list with per-pollutant
+history/forecast charts, plus a weather & climate section (current conditions, 5-day
+outlook, and 48h temperature/rain trend charts) so a visitor gets a full picture of
+the environment, not just one number.
 """
+import csv
 import json
 import os
+from datetime import date, datetime
 
 FORECAST_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "forecast.json")
+WEATHER_FORECAST_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "weather_forecast.json")
+WEATHER_HISTORY_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "weather_history.csv")
 OUTPUT_PATH = os.path.join(os.path.dirname(__file__), "..", "docs", "index.html")
 
 # Fixed categorical order per pollutant (dataviz skill: assign hues in fixed order, never cycled).
@@ -21,6 +28,13 @@ POLLUTANT_META = {
 }
 POLLUTANT_ORDER = ["aqi", "pm25", "pm10", "o3", "no2", "so2", "co"]
 
+WEATHER_META = {
+    "temperature": {"label": "Temperature", "light": "#eb6834", "dark": "#d95926", "unit": "°C"},
+    "rain_chance": {"label": "Rain chance", "light": "#2a78d6", "dark": "#3987e5", "unit": "%"},
+    "precipitation": {"label": "Precipitation", "light": "#1baf7a", "dark": "#199e70", "unit": "mm"},
+}
+WEATHER_ORDER = ["temperature", "rain_chance", "precipitation"]
+
 ADVISORY = {
     "good": "Air quality is good. A great day for outdoor activity.",
     "warning": "Acceptable for most people. Unusually sensitive individuals should consider limiting prolonged outdoor exertion.",
@@ -28,6 +42,24 @@ ADVISORY = {
     "critical": "Everyone should limit prolonged outdoor exertion; sensitive groups should avoid outdoor activity altogether.",
     "unknown": "No current reading available.",
 }
+
+# WMO weather codes (used by Open-Meteo) -> (icon, label)
+WMO_CODES = {
+    0: ("☀️", "Clear sky"), 1: ("🌤️", "Mostly clear"), 2: ("⛅", "Partly cloudy"), 3: ("☁️", "Overcast"),
+    45: ("🌫️", "Fog"), 48: ("🌫️", "Fog"),
+    51: ("🌦️", "Light drizzle"), 53: ("🌦️", "Drizzle"), 55: ("🌦️", "Dense drizzle"),
+    56: ("🌧️", "Freezing drizzle"), 57: ("🌧️", "Freezing drizzle"),
+    61: ("🌧️", "Light rain"), 63: ("🌧️", "Rain"), 65: ("🌧️", "Heavy rain"),
+    66: ("🌧️", "Freezing rain"), 67: ("🌧️", "Freezing rain"),
+    71: ("🌨️", "Light snow"), 73: ("🌨️", "Snow"), 75: ("🌨️", "Heavy snow"), 77: ("🌨️", "Snow grains"),
+    80: ("🌦️", "Rain showers"), 81: ("🌧️", "Rain showers"), 82: ("⛈️", "Violent showers"),
+    85: ("🌨️", "Snow showers"), 86: ("🌨️", "Snow showers"),
+    95: ("⛈️", "Thunderstorm"), 96: ("⛈️", "Thunderstorm, hail"), 99: ("⛈️", "Thunderstorm, hail"),
+}
+
+
+def weather_icon_label(code):
+    return WMO_CODES.get(code, ("—", "Unknown"))
 
 
 def aqi_status(value):
@@ -48,7 +80,76 @@ def current_aqi_for(station):
     return history[-1]["value"] if history else None
 
 
-def build_html(forecast):
+def load_weather_history_column(column):
+    if not os.path.isfile(WEATHER_HISTORY_PATH):
+        return []
+    with open(WEATHER_HISTORY_PATH, newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+    return [{"timestamp": r["timestamp"], "value": float(r[column])} for r in rows if r.get(column)]
+
+
+def build_weather(weather_raw):
+    if not weather_raw:
+        return None
+
+    current = weather_raw["current"]
+    icon, label = weather_icon_label(current.get("weather_code"))
+    now_ts = datetime.fromisoformat(current["timestamp"])
+    today = now_ts.date()
+
+    daily_out = []
+    for entry in weather_raw.get("daily", [])[:5]:
+        d = date.fromisoformat(entry["date"])
+        if d == today:
+            day_label = "Today"
+        elif (d - today).days == 1:
+            day_label = "Tomorrow"
+        else:
+            day_label = d.strftime("%a")
+        d_icon, d_label = weather_icon_label(entry.get("weather_code"))
+        daily_out.append({
+            "label": day_label,
+            "icon": d_icon,
+            "condition": d_label,
+            "temp_max": round(entry["temp_max"]),
+            "temp_min": round(entry["temp_min"]),
+            "rain_prob": entry.get("precipitation_probability_max"),
+        })
+
+    future_hourly = [h for h in weather_raw.get("hourly", []) if h["timestamp"] >= current["timestamp"]][:48]
+
+    charts = {
+        "temperature": {
+            "history": load_weather_history_column("temp"),
+            "forecast": [{"timestamp": h["timestamp"], "value": h["temp"]} for h in future_hourly],
+        },
+        "rain_chance": {
+            "history": [],
+            "forecast": [{"timestamp": h["timestamp"], "value": h["precipitation_probability"]} for h in future_hourly],
+        },
+        "precipitation": {
+            "history": load_weather_history_column("precipitation"),
+            "forecast": [{"timestamp": h["timestamp"], "value": h["precipitation"]} for h in future_hourly],
+        },
+    }
+
+    return {
+        "current": {
+            "temp": round(current["temp"]),
+            "feels_like": round(current["feels_like"]),
+            "humidity": current["humidity"],
+            "wind_speed": current["wind_speed"],
+            "uv_index": current["uv_index"],
+            "icon": icon,
+            "label": label,
+            "timestamp": current["timestamp"],
+        },
+        "daily": daily_out,
+        "charts": charts,
+    }
+
+
+def build_html(forecast, weather):
     stations = forecast.get("stations", {})
     generated_at = forecast.get("generated_at", "")
 
@@ -89,7 +190,31 @@ def build_html(forecast):
     html = html.replace("__DEFAULT_UID_JSON__", json.dumps(default_uid))
     html = html.replace("__META_JSON__", json.dumps(POLLUTANT_META, ensure_ascii=False))
     html = html.replace("__POLLUTANT_ORDER_JSON__", json.dumps(POLLUTANT_ORDER))
-    html = html.replace("__ADVISORY_JSON__", json.dumps(ADVISORY, ensure_ascii=False))
+    html = html.replace("__WEATHER_META_JSON__", json.dumps(WEATHER_META, ensure_ascii=False))
+    html = html.replace("__WEATHER_ORDER_JSON__", json.dumps(WEATHER_ORDER))
+    html = html.replace("__WEATHER_JSON__", json.dumps(weather, ensure_ascii=False))
+
+    if weather:
+        c = weather["current"]
+        html = html.replace("__W_ICON__", c["icon"])
+        html = html.replace("__W_TEMP__", str(c["temp"]))
+        html = html.replace("__W_LABEL__", c["label"])
+        html = html.replace("__W_FEELS__", str(c["feels_like"]))
+        html = html.replace("__W_HUMIDITY__", str(c["humidity"]))
+        html = html.replace("__W_WIND__", str(c["wind_speed"]))
+        day_cards = "".join(
+            f'<div class="day-card"><div class="day-label">{d["label"]}</div>'
+            f'<div class="icon" title="{d["condition"]}">{d["icon"]}</div>'
+            f'<div class="temps"><span class="max">{d["temp_max"]}°</span> '
+            f'<span class="min">{d["temp_min"]}°</span></div>'
+            f'<div class="rain">💧 {d["rain_prob"]}%</div></div>'
+            for d in weather["daily"]
+        )
+        html = html.replace("__DAY_CARDS__", day_cards)
+    else:
+        for token in ("__W_ICON__", "__W_TEMP__", "__W_LABEL__", "__W_FEELS__", "__W_HUMIDITY__", "__W_WIND__"):
+            html = html.replace(token, "—")
+        html = html.replace("__DAY_CARDS__", "")
     return html
 
 
@@ -98,7 +223,7 @@ TEMPLATE = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bengaluru Air Quality — Live &amp; 48h Forecast</title>
+<title>Bengaluru Environment Dashboard — Air Quality &amp; Weather</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   :root {
@@ -140,8 +265,11 @@ TEMPLATE = r"""<!doctype html>
   .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px 64px; }
   header h1 { font-size: 22px; margin: 0 0 4px; }
   header p { margin: 0; color: var(--text-secondary); font-size: 14px; }
+  section { margin-top: 36px; }
+  section > h2 { font-size: 18px; margin: 0 0 14px; }
+  section > p.section-sub { margin: -10px 0 14px; color: var(--text-secondary); font-size: 13px; }
 
-  .hero { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin: 24px 0 20px; }
+  .hero { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 16px; margin: 24px 0 4px; }
   .hero-main, .hero-side {
     background: var(--surface-1); border: 1px solid var(--border);
     border-radius: 12px; padding: 20px 24px;
@@ -161,15 +289,20 @@ TEMPLATE = r"""<!doctype html>
   .hero-side { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
   .hero-side .label { font-size: 12px; color: var(--text-muted); }
   .hero-side .value { font-size: 22px; font-weight: 600; }
+  .weather-now { display: flex; align-items: center; gap: 12px; }
+  .weather-now .icon { font-size: 40px; line-height: 1; }
+  .weather-now .temp { font-size: 30px; font-weight: 600; line-height: 1; }
+  .weather-now .details { display: flex; flex-direction: column; gap: 2px; font-size: 12px; color: var(--text-secondary); }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
 
   .panels { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-bottom: 20px; }
-  @media (max-width: 800px) { .panels, .hero { grid-template-columns: 1fr; } }
+  @media (max-width: 800px) { .panels { grid-template-columns: 1fr; } }
 
   .card {
     background: var(--surface-1); border: 1px solid var(--border);
     border-radius: 12px; padding: 16px; position: relative;
   }
-  .card h2 { font-size: 14px; margin: 0 0 12px; }
+  .card h2, .card h3.card-title { font-size: 14px; margin: 0 0 12px; }
 
   #map { height: 360px; border-radius: 8px; }
   .map-legend {
@@ -194,6 +327,18 @@ TEMPLATE = r"""<!doctype html>
   .detail-header h2 { margin: 0; font-size: 16px; }
   .detail-header .freshness { font-size: 12px; color: var(--text-muted); }
   .freshness.stale { color: var(--status-serious); }
+
+  .day-strip { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 16px; }
+  .day-card {
+    flex: 1 1 0; min-width: 92px; background: var(--page); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px; text-align: center;
+  }
+  .day-card .day-label { font-size: 12px; color: var(--text-secondary); font-weight: 600; }
+  .day-card .icon { font-size: 24px; margin: 4px 0; }
+  .day-card .temps { font-size: 13px; }
+  .day-card .temps .max { font-weight: 600; }
+  .day-card .temps .min { color: var(--text-muted); }
+  .day-card .rain { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
 
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
   .chart-card h3 { font-size: 14px; margin: 0 0 2px; }
@@ -225,57 +370,78 @@ TEMPLATE = r"""<!doctype html>
 <body>
 <div class="wrap">
   <header>
-    <h1>Bengaluru Air Quality</h1>
-    <p>Live readings from __STATION_COUNT__ monitoring stations across the city, with a statistical 48-hour forecast per station, updated automatically.</p>
+    <h1>Bengaluru Environment Dashboard</h1>
+    <p>Live air quality from __STATION_COUNT__ monitoring stations and current weather across the city, with short-term forecasts, updated automatically every hour.</p>
   </header>
 
   <div class="hero">
     <div class="hero-main">
       <div class="hero-value">__CITY_AQI__</div>
       <div class="hero-meta">
-        <span class="status-badge status-__CITY_STATUS_KEY__"><span class="status-dot"></span>City average · __CITY_STATUS_LABEL__</span>
+        <span class="status-badge status-__CITY_STATUS_KEY__"><span class="status-dot"></span>City average AQI · __CITY_STATUS_LABEL__</span>
         <span class="hero-sub">Across __STATION_COUNT__ stations · pipeline last ran <span id="updated-at">__GENERATED_AT__</span></span>
         <span class="hero-advisory">__CITY_ADVISORY__</span>
       </div>
     </div>
+    <div class="hero-side weather-now">
+      <div class="icon">__W_ICON__</div>
+      <div class="details">
+        <span class="temp">__W_TEMP__°C</span>
+        <span>__W_LABEL__ · feels __W_FEELS__°C</span>
+        <span>💧 __W_HUMIDITY__% · 💨 __W_WIND__ km/h</span>
+      </div>
+    </div>
     <div class="hero-side">
-      <span class="label">Worst reading right now</span>
+      <span class="label">Worst AQI reading right now</span>
       <span class="value">__WORST_NAME__</span>
       <span class="label">AQI __WORST_AQI__</span>
     </div>
   </div>
 
-  <div class="panels">
-    <div class="card">
-      <h2>Station map</h2>
-      <div id="map"></div>
-      <div class="map-legend">
-        <span><span class="dot" style="background:var(--status-good)"></span>Good</span>
-        <span><span class="dot" style="background:var(--status-warning)"></span>Moderate</span>
-        <span><span class="dot" style="background:var(--status-serious)"></span>Unhealthy</span>
-        <span><span class="dot" style="background:var(--status-critical)"></span>Hazardous</span>
-        <span><span class="dot" style="background:var(--status-unknown)"></span>No data</span>
+  <section>
+    <h2>Air quality</h2>
+    <div class="panels">
+      <div class="card">
+        <h2>Station map</h2>
+        <div id="map"></div>
+        <div class="map-legend">
+          <span><span class="dot" style="background:var(--status-good)"></span>Good</span>
+          <span><span class="dot" style="background:var(--status-warning)"></span>Moderate</span>
+          <span><span class="dot" style="background:var(--status-serious)"></span>Unhealthy</span>
+          <span><span class="dot" style="background:var(--status-critical)"></span>Hazardous</span>
+          <span><span class="dot" style="background:var(--status-unknown)"></span>No data</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Stations, worst first</h2>
+        <div class="station-list" id="station-list"></div>
       </div>
     </div>
-    <div class="card">
-      <h2>Stations, worst first</h2>
-      <div class="station-list" id="station-list"></div>
-    </div>
-  </div>
 
-  <div class="card" style="margin-bottom: 20px;">
-    <div class="detail-header">
-      <h2 id="detail-title">Station detail</h2>
-      <span class="freshness" id="detail-freshness"></span>
+    <div class="card">
+      <div class="detail-header">
+        <h2 id="detail-title">Station detail</h2>
+        <span class="freshness" id="detail-freshness"></span>
+      </div>
+      <div class="grid" id="chart-grid"></div>
     </div>
-    <div class="grid" id="chart-grid"></div>
-  </div>
+  </section>
+
+  <section>
+    <h2>Weather &amp; climate</h2>
+    <p class="section-sub">City-center forecast (Open-Meteo) — 5-day outlook and 48-hour trends.</p>
+    <div class="card" style="margin-bottom:16px;">
+      <div class="day-strip">__DAY_CARDS__</div>
+    </div>
+    <div class="grid" id="weather-grid"></div>
+  </section>
 
   <footer>
-    Data source: <a href="https://waqi.info/" target="_blank" rel="noopener">World Air Quality Index (WAQI)</a> project, CPCB Bengaluru stations.
-    Forecasts are produced by a statistical time-series model (Holt-Winters / Holt's linear trend depending on history length) and are estimates, not guarantees.
-    Government monitoring stations occasionally stop reporting for extended periods — when that happens for a station, its "last observed" time will say so and its
-    forecast falls back to a flat estimate rather than inventing trend data. Pipeline runs automatically every hour via GitHub Actions.
+    Air quality: <a href="https://waqi.info/" target="_blank" rel="noopener">World Air Quality Index (WAQI)</a> project, CPCB Bengaluru stations.
+    Weather: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>.
+    AQI forecasts are produced by a statistical time-series model where enough history exists, WAQI's own outlook where it doesn't, or a flat estimate as a last resort —
+    each chart says which. Government monitoring stations occasionally stop reporting for extended periods; when that happens the station's "last observed" time says so.
+    Weather forecasts are Open-Meteo's own numerical model, used as-is. Pipeline runs automatically every hour via GitHub Actions.
   </footer>
 </div>
 
@@ -288,12 +454,18 @@ const ORDER = __ORDER_JSON__;
 const DEFAULT_UID = __DEFAULT_UID_JSON__;
 const META = __META_JSON__;
 const POLLUTANT_ORDER = __POLLUTANT_ORDER_JSON__;
-const ADVISORY = __ADVISORY_JSON__;
+const WEATHER = __WEATHER_JSON__;
+const WEATHER_META = __WEATHER_META_JSON__;
+const WEATHER_ORDER = __WEATHER_ORDER_JSON__;
 const svgNS = "http://www.w3.org/2000/svg";
 const tooltip = document.getElementById("tooltip");
 const STATUS_VAR = {
   good: "--status-good", warning: "--status-warning", serious: "--status-serious",
   critical: "--status-critical", unknown: "--status-unknown",
+};
+const FORECAST_SOURCE_LABEL = {
+  model: "modeled forecast", waqi: "WAQI outlook", waqi_estimate: "estimated from PM outlook",
+  flat: "flat — limited history",
 };
 
 let selectedUid = DEFAULT_UID;
@@ -404,15 +576,33 @@ function renderDetail() {
     const card = document.createElement("div");
     card.className = "card chart-card";
     gridEl.appendChild(card);
-    renderChart(card, s.series[key], META[key]);
+    const forecastLabel = FORECAST_SOURCE_LABEL[s.series[key].forecast_source] || "forecast";
+    renderChart(card, s.series[key], META[key], forecastLabel);
   });
 }
 
-function renderChart(root, data, meta) {
+function renderWeatherCharts() {
+  const gridEl = document.getElementById("weather-grid");
+  if (!WEATHER) {
+    gridEl.innerHTML = '<p class="chart-empty">Weather data not available yet.</p>';
+    return;
+  }
+  gridEl.innerHTML = "";
+  WEATHER_ORDER.forEach(key => {
+    const data = WEATHER.charts[key];
+    const card = document.createElement("div");
+    card.className = "card chart-card";
+    gridEl.appendChild(card);
+    renderChart(card, data, WEATHER_META[key], "forecast");
+  });
+}
+
+function renderChart(root, data, meta, forecastLabel) {
   const color = isDark() ? meta.dark : meta.light;
   const history = data.history || [];
   const forecast = data.forecast || [];
   const all = history.concat(forecast);
+  forecastLabel = forecastLabel || "forecast";
 
   root.innerHTML = "";
   const header = document.createElement("div");
@@ -420,16 +610,18 @@ function renderChart(root, data, meta) {
   h3.textContent = meta.label;
   const key2 = document.createElement("div");
   key2.className = "card-key";
-  const sw = document.createElement("span");
-  sw.className = "swatch-line";
-  sw.style.background = color;
-  key2.appendChild(sw);
-  key2.appendChild(document.createTextNode(" actual"));
+  if (history.length) {
+    const sw = document.createElement("span");
+    sw.className = "swatch-line";
+    sw.style.background = color;
+    key2.appendChild(sw);
+    key2.appendChild(document.createTextNode(" actual"));
+  }
   const dash = document.createElement("span");
   dash.className = "dashed";
   dash.style.borderColor = color;
   key2.appendChild(dash);
-  key2.appendChild(document.createTextNode("forecast · " + meta.unit));
+  key2.appendChild(document.createTextNode(forecastLabel + " · " + meta.unit));
   header.appendChild(h3);
   header.appendChild(key2);
   root.appendChild(header);
@@ -448,8 +640,8 @@ function renderChart(root, data, meta) {
   const ys = all.map(d => d.value);
   const xMin = Math.min(...xs), xMax = Math.max(...xs);
   const yMinRaw = Math.min(...ys), yMaxRaw = Math.max(...ys);
-  const pad = (yMaxRaw - yMinRaw) * 0.15 || Math.max(1, yMaxRaw * 0.1);
-  const yMin = Math.max(0, yMinRaw - pad), yMax = yMaxRaw + pad;
+  const pad = (yMaxRaw - yMinRaw) * 0.15 || Math.max(1, Math.abs(yMaxRaw) * 0.1) || 1;
+  const yMin = yMinRaw - pad, yMax = yMaxRaw + pad;
 
   const sx = t => mL + (t - xMin) / ((xMax - xMin) || 1) * (width - mL - mR);
   const sy = v => height - mB - (v - yMin) / ((yMax - yMin) || 1) * (height - mT - mB);
@@ -459,7 +651,7 @@ function renderChart(root, data, meta) {
   svg.setAttribute("width", "100%");
   svg.setAttribute("height", height);
   svg.setAttribute("role", "img");
-  svg.setAttribute("aria-label", meta.label + " history and 48 hour forecast");
+  svg.setAttribute("aria-label", meta.label + " history and forecast");
 
   const gridCount = 4;
   for (let i = 0; i <= gridCount; i++) {
@@ -575,14 +767,15 @@ function renderChart(root, data, meta) {
 function renderAll() {
   renderStationList();
   renderDetail();
+  renderWeatherCharts();
 }
 
 if (DEFAULT_UID) {
   initMap();
-  renderAll();
 } else {
   document.getElementById("chart-grid").innerHTML = '<p class="chart-empty">No station data yet.</p>';
 }
+renderAll();
 
 const updatedEl = document.getElementById("updated-at");
 if (updatedEl && updatedEl.textContent) {
@@ -600,7 +793,14 @@ if (updatedEl && updatedEl.textContent) {
 def main():
     with open(FORECAST_PATH, "r", encoding="utf-8") as f:
         forecast = json.load(f)
-    html = build_html(forecast)
+
+    weather_raw = None
+    if os.path.isfile(WEATHER_FORECAST_PATH):
+        with open(WEATHER_FORECAST_PATH, "r", encoding="utf-8") as f:
+            weather_raw = json.load(f)
+    weather = build_weather(weather_raw)
+
+    html = build_html(forecast, weather)
     os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
     with open(OUTPUT_PATH, "w", encoding="utf-8") as f:
         f.write(html)

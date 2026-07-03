@@ -5,8 +5,14 @@ Each row records the station's own reported observation time (not our fetch time
 CPCB stations sometimes go stale for days, and a new row every hour with the same
 stale reading would masquerade as real hourly variation to the forecaster. Rows are
 only appended when a station has actually produced a new observation since last run.
+
+Also snapshots WAQI's own bundled multi-day pm25/pm10 forecast per station to
+data/waqi_forecast_raw.json (overwritten each run) — forecast.py uses this as a
+much better fallback than a flat line when a station has too little hourly history
+of its own to fit a statistical model.
 """
 import csv
+import json
 import os
 import sys
 
@@ -17,12 +23,14 @@ SEARCH_URL = "https://api.waqi.info/search/"
 FEED_URL = "https://api.waqi.info/feed/@{uid}/"
 KEYWORD = "bengaluru"
 HISTORY_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "aqi_history.csv")
+WAQI_FORECAST_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "waqi_forecast_raw.json")
 
 # Used only if the search API is unreachable — known Bengaluru station uids as of setup.
 FALLBACK_UIDS = [11270, 8190, 11276, 11428, 8686, 11293, 11312, 12441, 8687]
 
 POLLUTANT_KEYS = ["pm25", "pm10", "o3", "no2", "so2", "co"]
 FIELDS = ["timestamp", "station_uid", "station_name", "lat", "lon", "aqi"] + POLLUTANT_KEYS
+FORECAST_POLLUTANTS = ["pm25", "pm10"]
 
 
 def discover_station_uids():
@@ -70,7 +78,11 @@ def fetch_station(uid):
     }
     for key in POLLUTANT_KEYS:
         row[key] = iaqi.get(key, {}).get("v")
-    return row
+
+    daily_forecast = data.get("forecast", {}).get("daily", {})
+    forecast = {k: daily_forecast[k] for k in FORECAST_POLLUTANTS if k in daily_forecast}
+
+    return row, forecast
 
 
 def load_last_seen():
@@ -99,18 +111,27 @@ def main():
     uids = discover_station_uids()
     last_seen = load_last_seen()
     new_rows = []
+    waqi_forecasts = {}
 
     for uid in uids:
         try:
-            row = fetch_station(uid)
+            result = fetch_station(uid)
         except requests.RequestException as e:
             print(f"Skipping station {uid}: {e}")
             continue
-        if row is None:
+        if result is None:
             continue
+        row, forecast = result
+        if forecast:
+            waqi_forecasts[str(uid)] = forecast
         if last_seen.get(str(row["station_uid"])) == row["timestamp"]:
             continue
         new_rows.append(row)
+
+    if waqi_forecasts:
+        os.makedirs(os.path.dirname(WAQI_FORECAST_PATH), exist_ok=True)
+        with open(WAQI_FORECAST_PATH, "w", encoding="utf-8") as f:
+            json.dump(waqi_forecasts, f, indent=2)
 
     if new_rows:
         append_rows(new_rows)
