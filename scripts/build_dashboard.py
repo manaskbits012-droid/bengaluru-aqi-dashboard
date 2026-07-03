@@ -1,4 +1,8 @@
-"""Render data/forecast.json into a self-contained docs/index.html dashboard (GitHub Pages source)."""
+"""Render data/forecast.json into a self-contained docs/index.html dashboard (GitHub Pages source).
+
+Shows every Bengaluru monitoring station on a map + sortable list, with per-pollutant
+history/forecast charts for whichever station is selected.
+"""
 import json
 import os
 
@@ -17,6 +21,14 @@ POLLUTANT_META = {
 }
 POLLUTANT_ORDER = ["aqi", "pm25", "pm10", "o3", "no2", "so2", "co"]
 
+ADVISORY = {
+    "good": "Air quality is good. A great day for outdoor activity.",
+    "warning": "Acceptable for most people. Unusually sensitive individuals should consider limiting prolonged outdoor exertion.",
+    "serious": "Sensitive groups — children, older adults, and those with respiratory or heart conditions — should limit prolonged outdoor exertion.",
+    "critical": "Everyone should limit prolonged outdoor exertion; sensitive groups should avoid outdoor activity altogether.",
+    "unknown": "No current reading available.",
+}
+
 
 def aqi_status(value):
     if value is None:
@@ -30,29 +42,54 @@ def aqi_status(value):
     return ("critical", "Hazardous")
 
 
+def current_aqi_for(station):
+    aqi_series = station.get("series", {}).get("aqi", {})
+    history = aqi_series.get("history", [])
+    return history[-1]["value"] if history else None
+
+
 def build_html(forecast):
-    series = forecast.get("series", {})
-    aqi_series = series.get("aqi", {})
-    aqi_history = aqi_series.get("history", [])
-    current_aqi = aqi_history[-1]["value"] if aqi_history else None
-    status_key, status_label = aqi_status(current_aqi)
+    stations = forecast.get("stations", {})
     generated_at = forecast.get("generated_at", "")
 
-    charts_json = json.dumps(
-        {p: series[p] for p in POLLUTANT_ORDER if p in series},
-        ensure_ascii=False,
+    enriched = {}
+    for uid, station in stations.items():
+        current = current_aqi_for(station)
+        status_key, status_label = aqi_status(current)
+        enriched[uid] = {
+            **station,
+            "current_aqi": current,
+            "status_key": status_key,
+            "status_label": status_label,
+        }
+
+    with_reading = [s for s in enriched.values() if s["current_aqi"] is not None]
+    city_avg = round(sum(s["current_aqi"] for s in with_reading) / len(with_reading), 0) if with_reading else None
+    worst = max(with_reading, key=lambda s: s["current_aqi"]) if with_reading else None
+    city_status_key, city_status_label = aqi_status(city_avg)
+
+    order = sorted(
+        enriched.keys(),
+        key=lambda uid: enriched[uid]["current_aqi"] if enriched[uid]["current_aqi"] is not None else -1,
+        reverse=True,
     )
-    meta_json = json.dumps(POLLUTANT_META, ensure_ascii=False)
-    order_json = json.dumps([p for p in POLLUTANT_ORDER if p in series])
+    default_uid = order[0] if order else None
 
     html = TEMPLATE
-    html = html.replace("__CURRENT_AQI__", str(current_aqi) if current_aqi is not None else "—")
-    html = html.replace("__STATUS_KEY__", status_key)
-    html = html.replace("__STATUS_LABEL__", status_label)
+    html = html.replace("__CITY_AQI__", str(int(city_avg)) if city_avg is not None else "—")
+    html = html.replace("__CITY_STATUS_KEY__", city_status_key)
+    html = html.replace("__CITY_STATUS_LABEL__", city_status_label)
+    html = html.replace("__CITY_ADVISORY__", ADVISORY[city_status_key])
+    html = html.replace("__WORST_NAME__", worst["name"] if worst else "—")
+    html = html.replace("__WORST_AQI__", str(int(worst["current_aqi"])) if worst else "—")
+    html = html.replace("__STATION_COUNT__", str(len(enriched)))
     html = html.replace("__GENERATED_AT__", generated_at)
-    html = html.replace("__CHARTS_JSON__", charts_json)
-    html = html.replace("__META_JSON__", meta_json)
-    html = html.replace("__ORDER_JSON__", order_json)
+    html = html.replace("__STATIONS_JSON__", json.dumps(enriched, ensure_ascii=False))
+    html = html.replace("__ORDER_JSON__", json.dumps(order))
+    html = html.replace("__DEFAULT_UID_JSON__", json.dumps(default_uid))
+    html = html.replace("__META_JSON__", json.dumps(POLLUTANT_META, ensure_ascii=False))
+    html = html.replace("__POLLUTANT_ORDER_JSON__", json.dumps(POLLUTANT_ORDER))
+    html = html.replace("__ADVISORY_JSON__", json.dumps(ADVISORY, ensure_ascii=False))
     return html
 
 
@@ -62,6 +99,7 @@ TEMPLATE = r"""<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bengaluru Air Quality — Live &amp; 48h Forecast</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   :root {
     --surface-1: #fcfcfb;
@@ -76,6 +114,8 @@ TEMPLATE = r"""<!doctype html>
     --status-warning: #fab219;
     --status-serious: #ec835a;
     --status-critical: #d03b3b;
+    --status-unknown: #898781;
+    --accent: #2a78d6;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -87,10 +127,7 @@ TEMPLATE = r"""<!doctype html>
       --grid: #2c2c2a;
       --axis: #383835;
       --border: rgba(255,255,255,0.10);
-      --status-good: #0ca30c;
-      --status-warning: #fab219;
-      --status-serious: #ec835a;
-      --status-critical: #d03b3b;
+      --accent: #3987e5;
     }
   }
   * { box-sizing: border-box; }
@@ -100,33 +137,69 @@ TEMPLATE = r"""<!doctype html>
     color: var(--text-primary);
     font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 32px 20px 64px; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 20px 64px; }
   header h1 { font-size: 22px; margin: 0 0 4px; }
   header p { margin: 0; color: var(--text-secondary); font-size: 14px; }
-  .hero {
-    display: flex; align-items: center; gap: 20px;
+
+  .hero { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin: 24px 0 20px; }
+  .hero-main, .hero-side {
     background: var(--surface-1); border: 1px solid var(--border);
-    border-radius: 12px; padding: 20px 24px; margin: 24px 0 28px;
+    border-radius: 12px; padding: 20px 24px;
   }
+  .hero-main { display: flex; align-items: center; gap: 20px; }
   .hero-value { font-size: 56px; font-weight: 600; line-height: 1; }
   .hero-meta { display: flex; flex-direction: column; gap: 6px; }
   .status-badge { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }
-  .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none; }
   .status-good .status-dot { background: var(--status-good); }
   .status-warning .status-dot { background: var(--status-warning); }
   .status-serious .status-dot { background: var(--status-serious); }
   .status-critical .status-dot { background: var(--status-critical); }
-  .status-unknown .status-dot { background: var(--text-muted); }
+  .status-unknown .status-dot { background: var(--status-unknown); }
   .hero-sub { color: var(--text-secondary); font-size: 13px; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+  .hero-advisory { color: var(--text-secondary); font-size: 13px; margin-top: 4px; max-width: 46ch; }
+  .hero-side { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+  .hero-side .label { font-size: 12px; color: var(--text-muted); }
+  .hero-side .value { font-size: 22px; font-weight: 600; }
+
+  .panels { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-bottom: 20px; }
+  @media (max-width: 800px) { .panels, .hero { grid-template-columns: 1fr; } }
+
   .card {
     background: var(--surface-1); border: 1px solid var(--border);
-    border-radius: 12px; padding: 16px 16px 8px; position: relative;
+    border-radius: 12px; padding: 16px; position: relative;
   }
-  .card h3 { font-size: 14px; margin: 0 0 2px; }
-  .card .card-key { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
-  .card .card-key .swatch-line { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 4px; }
-  .card .card-key .dashed { border-top: 2px dashed; width: 14px; height: 0; display: inline-block; vertical-align: middle; margin: 0 4px 0 10px; }
+  .card h2 { font-size: 14px; margin: 0 0 12px; }
+
+  #map { height: 360px; border-radius: 8px; }
+  .map-legend {
+    display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-size: 11px; color: var(--text-secondary);
+  }
+  .map-legend span { display: inline-flex; align-items: center; gap: 5px; }
+  .map-legend .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+  .station-list { max-height: 360px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+  .station-row {
+    display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px;
+    cursor: pointer; border: 1px solid transparent; background: none; text-align: left; width: 100%;
+    font: inherit; color: inherit;
+  }
+  .station-row:hover { background: var(--page); }
+  .station-row.selected { border-color: var(--accent); background: var(--page); }
+  .station-row .name { flex: 1; font-size: 13px; }
+  .station-row .aqi-val { font-weight: 600; font-size: 13px; min-width: 28px; text-align: right; }
+  .station-row .age { font-size: 11px; color: var(--text-muted); min-width: 70px; text-align: right; }
+
+  .detail-header { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .detail-header h2 { margin: 0; font-size: 16px; }
+  .detail-header .freshness { font-size: 12px; color: var(--text-muted); }
+  .freshness.stale { color: var(--status-serious); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
+  .chart-card h3 { font-size: 14px; margin: 0 0 2px; }
+  .chart-card .card-key { font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+  .chart-card .card-key .swatch-line { display: inline-block; width: 14px; height: 2px; vertical-align: middle; margin-right: 4px; }
+  .chart-card .card-key .dashed { border-top: 2px dashed; width: 14px; height: 0; display: inline-block; vertical-align: middle; margin: 0 4px 0 10px; }
   .gridline { stroke: var(--grid); stroke-width: 1; }
   .axis-label { fill: var(--text-muted); font-size: 10px; }
   .now-line { stroke: var(--axis); stroke-width: 1; stroke-dasharray: 2 3; }
@@ -137,7 +210,7 @@ TEMPLATE = r"""<!doctype html>
   .tooltip {
     position: absolute; pointer-events: none; background: var(--surface-1);
     border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px;
-    font-size: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 5;
+    font-size: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; z-index: 1000;
     white-space: nowrap;
   }
   .tooltip .t-time { color: var(--text-muted); margin-bottom: 3px; }
@@ -145,41 +218,90 @@ TEMPLATE = r"""<!doctype html>
   .tooltip .t-key { display: inline-block; width: 10px; height: 2px; margin-right: 5px; vertical-align: middle; }
   footer { margin-top: 32px; color: var(--text-muted); font-size: 12px; line-height: 1.6; }
   footer a { color: var(--text-secondary); }
+  .leaflet-popup-content-wrapper { background: var(--surface-1); color: var(--text-primary); }
+  .leaflet-popup-tip { background: var(--surface-1); }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <h1>Bengaluru Air Quality</h1>
-    <p>Live hourly readings and a statistical 48-hour forecast, updated automatically.</p>
+    <p>Live readings from __STATION_COUNT__ monitoring stations across the city, with a statistical 48-hour forecast per station, updated automatically.</p>
   </header>
 
   <div class="hero">
-    <div class="hero-value">__CURRENT_AQI__</div>
-    <div class="hero-meta">
-      <span class="status-badge status-__STATUS_KEY__"><span class="status-dot"></span>__STATUS_LABEL__</span>
-      <span class="hero-sub">Current overall AQI · last updated <span id="updated-at">__GENERATED_AT__</span></span>
+    <div class="hero-main">
+      <div class="hero-value">__CITY_AQI__</div>
+      <div class="hero-meta">
+        <span class="status-badge status-__CITY_STATUS_KEY__"><span class="status-dot"></span>City average · __CITY_STATUS_LABEL__</span>
+        <span class="hero-sub">Across __STATION_COUNT__ stations · pipeline last ran <span id="updated-at">__GENERATED_AT__</span></span>
+        <span class="hero-advisory">__CITY_ADVISORY__</span>
+      </div>
+    </div>
+    <div class="hero-side">
+      <span class="label">Worst reading right now</span>
+      <span class="value">__WORST_NAME__</span>
+      <span class="label">AQI __WORST_AQI__</span>
     </div>
   </div>
 
-  <div class="grid" id="chart-grid"></div>
+  <div class="panels">
+    <div class="card">
+      <h2>Station map</h2>
+      <div id="map"></div>
+      <div class="map-legend">
+        <span><span class="dot" style="background:var(--status-good)"></span>Good</span>
+        <span><span class="dot" style="background:var(--status-warning)"></span>Moderate</span>
+        <span><span class="dot" style="background:var(--status-serious)"></span>Unhealthy</span>
+        <span><span class="dot" style="background:var(--status-critical)"></span>Hazardous</span>
+        <span><span class="dot" style="background:var(--status-unknown)"></span>No data</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Stations, worst first</h2>
+      <div class="station-list" id="station-list"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom: 20px;">
+    <div class="detail-header">
+      <h2 id="detail-title">Station detail</h2>
+      <span class="freshness" id="detail-freshness"></span>
+    </div>
+    <div class="grid" id="chart-grid"></div>
+  </div>
 
   <footer>
-    Data source: <a href="https://waqi.info/" target="_blank" rel="noopener">World Air Quality Index (WAQI)</a> project, Bengaluru station.
-    Forecasts are produced by a statistical time-series model (Holt-Winters / Holt's linear trend depending on history length)
-    and are estimates, not guarantees — accuracy improves as more hourly history accumulates.
-    Pipeline runs automatically every hour via GitHub Actions.
+    Data source: <a href="https://waqi.info/" target="_blank" rel="noopener">World Air Quality Index (WAQI)</a> project, CPCB Bengaluru stations.
+    Forecasts are produced by a statistical time-series model (Holt-Winters / Holt's linear trend depending on history length) and are estimates, not guarantees.
+    Government monitoring stations occasionally stop reporting for extended periods — when that happens for a station, its "last observed" time will say so and its
+    forecast falls back to a flat estimate rather than inventing trend data. Pipeline runs automatically every hour via GitHub Actions.
   </footer>
 </div>
 
 <div class="tooltip" id="tooltip"></div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const CHARTS = __CHARTS_JSON__;
-const META = __META_JSON__;
+const STATIONS = __STATIONS_JSON__;
 const ORDER = __ORDER_JSON__;
+const DEFAULT_UID = __DEFAULT_UID_JSON__;
+const META = __META_JSON__;
+const POLLUTANT_ORDER = __POLLUTANT_ORDER_JSON__;
+const ADVISORY = __ADVISORY_JSON__;
 const svgNS = "http://www.w3.org/2000/svg";
 const tooltip = document.getElementById("tooltip");
+const STATUS_VAR = {
+  good: "--status-good", warning: "--status-warning", serious: "--status-serious",
+  critical: "--status-critical", unknown: "--status-unknown",
+};
+
+let selectedUid = DEFAULT_UID;
+let map, markers = {};
+
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
 
 function isDark() {
   return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -190,9 +312,103 @@ function fmtTime(ts) {
   return d.toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
-function renderChart(root, key) {
-  const data = CHARTS[key];
-  const meta = META[key];
+function relativeAge(ts) {
+  const diffMs = Date.now() - new Date(ts).getTime();
+  const hours = diffMs / 3600000;
+  if (hours < 1) return "just now";
+  if (hours < 24) return Math.round(hours) + "h ago";
+  return Math.round(hours / 24) + "d ago";
+}
+
+function initMap() {
+  map = L.map("map", { scrollWheelZoom: false }).setView([12.9716, 77.5946], 11);
+  const tileUrl = isDark()
+    ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+    : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+  L.tileLayer(tileUrl, {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    maxZoom: 18,
+  }).addTo(map);
+
+  ORDER.forEach(uid => {
+    const s = STATIONS[uid];
+    if (s.lat == null || s.lon == null) return;
+    const color = cssVar(STATUS_VAR[s.status_key]);
+    const marker = L.circleMarker([s.lat, s.lon], {
+      radius: 9, weight: 2, color: cssVar("--surface-1"), fillColor: color, fillOpacity: 0.95,
+    }).addTo(map);
+    const label = s.current_aqi != null ? (s.name + " — AQI " + Math.round(s.current_aqi)) : (s.name + " — no data");
+    marker.bindTooltip(label, { direction: "top" });
+    marker.on("click", () => selectStation(uid));
+    markers[uid] = marker;
+  });
+}
+
+function renderStationList() {
+  const list = document.getElementById("station-list");
+  list.innerHTML = "";
+  ORDER.forEach(uid => {
+    const s = STATIONS[uid];
+    const row = document.createElement("button");
+    row.className = "station-row" + (uid === selectedUid ? " selected" : "");
+    row.setAttribute("type", "button");
+
+    const dot = document.createElement("span");
+    dot.className = "status-dot";
+    dot.style.background = "var(" + STATUS_VAR[s.status_key] + ")";
+    row.appendChild(dot);
+
+    const name = document.createElement("span");
+    name.className = "name";
+    name.textContent = s.name;
+    row.appendChild(name);
+
+    const val = document.createElement("span");
+    val.className = "aqi-val";
+    val.textContent = s.current_aqi != null ? Math.round(s.current_aqi) : "—";
+    row.appendChild(val);
+
+    const age = document.createElement("span");
+    age.className = "age";
+    age.textContent = relativeAge(s.last_observed);
+    row.appendChild(age);
+
+    row.addEventListener("click", () => selectStation(uid));
+    list.appendChild(row);
+  });
+}
+
+function selectStation(uid) {
+  selectedUid = uid;
+  renderStationList();
+  renderDetail();
+  const marker = markers[uid];
+  if (marker) {
+    map.panTo(marker.getLatLng());
+    marker.openTooltip();
+  }
+}
+
+function renderDetail() {
+  const s = STATIONS[selectedUid];
+  document.getElementById("detail-title").textContent = s.name;
+  const freshness = document.getElementById("detail-freshness");
+  const hoursOld = (Date.now() - new Date(s.last_observed).getTime()) / 3600000;
+  freshness.textContent = "Last observed " + relativeAge(s.last_observed) + " (" + fmtTime(s.last_observed) + ")";
+  freshness.className = "freshness" + (hoursOld > 24 ? " stale" : "");
+
+  const gridEl = document.getElementById("chart-grid");
+  gridEl.innerHTML = "";
+  POLLUTANT_ORDER.forEach(key => {
+    if (!s.series[key]) return;
+    const card = document.createElement("div");
+    card.className = "card chart-card";
+    gridEl.appendChild(card);
+    renderChart(card, s.series[key], META[key]);
+  });
+}
+
+function renderChart(root, data, meta) {
   const color = isDark() ? meta.dark : meta.light;
   const history = data.history || [];
   const forecast = data.forecast || [];
@@ -357,19 +573,15 @@ function renderChart(root, key) {
 }
 
 function renderAll() {
-  const gridEl = document.getElementById("chart-grid");
-  gridEl.innerHTML = "";
-  ORDER.forEach(key => {
-    const card = document.createElement("div");
-    card.className = "card";
-    gridEl.appendChild(card);
-    renderChart(card, key);
-  });
+  renderStationList();
+  renderDetail();
 }
 
-renderAll();
-if (window.matchMedia) {
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", renderAll);
+if (DEFAULT_UID) {
+  initMap();
+  renderAll();
+} else {
+  document.getElementById("chart-grid").innerHTML = '<p class="chart-empty">No station data yet.</p>';
 }
 
 const updatedEl = document.getElementById("updated-at");
