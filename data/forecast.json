@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-03T20:05:57.953849+00:00",
+  "generated_at": "2026-07-03T20:40:49.594515+00:00",
   "stations": {
     "11270": {
       "name": "Hombegowda Nagar, Bengaluru, India",
@@ -207,7 +207,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 53.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm25": {
           "history": [
@@ -409,7 +410,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 53.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm10": {
           "history": [
@@ -611,7 +613,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 27.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "o3": {
           "history": [
@@ -813,7 +816,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 5.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "no2": {
           "history": [
@@ -1015,7 +1019,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 11.2
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "so2": {
           "history": [
@@ -1217,7 +1222,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 4.1
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "co": {
           "history": [
@@ -1419,7 +1425,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 2.9
             }
-          ]
+          ],
+          "forecast_source": "flat"
         }
       }
     },
@@ -1629,7 +1636,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 57.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm25": {
           "history": [
@@ -1831,7 +1839,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 57.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm10": {
           "history": [
@@ -2033,7 +2042,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 20.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "o3": {
           "history": [
@@ -2235,7 +2245,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 23.1
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "no2": {
           "history": [
@@ -2437,7 +2448,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 2.9
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "so2": {
           "history": [
@@ -2639,7 +2651,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 10.1
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "co": {
           "history": [
@@ -2841,7 +2854,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 2.5
             }
-          ]
+          ],
+          "forecast_source": "flat"
         }
       }
     },
@@ -3051,7 +3065,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 71.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm25": {
           "history": [
@@ -3253,7 +3268,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 56.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm10": {
           "history": [
@@ -3455,7 +3471,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 71.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "o3": {
           "history": [
@@ -3657,7 +3674,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 3.8
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "no2": {
           "history": [
@@ -3859,7 +3877,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 3.6
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "so2": {
           "history": [
@@ -4061,7 +4080,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 3.5
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "co": {
           "history": [
@@ -4263,7 +4283,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 5.2
             }
-          ]
+          ],
+          "forecast_source": "flat"
         }
       }
     },
@@ -4473,7 +4494,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 44.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm25": {
           "history": [
@@ -4675,7 +4697,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 44.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm10": {
           "history": [
@@ -4877,7 +4900,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 17.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "o3": {
           "history": [
@@ -5079,7 +5103,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 7.7
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "no2": {
           "history": [
@@ -5281,7 +5306,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 8.7
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "so2": {
           "history": [
@@ -5483,7 +5509,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 5.1
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "co": {
           "history": [
@@ -5685,7 +5712,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 4.5
             }
-          ]
+          ],
+          "forecast_source": "flat"
         }
       }
     },
@@ -5895,7 +5923,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 20.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm25": {
           "history": [
@@ -6097,7 +6126,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 23.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm10": {
           "history": [
@@ -6299,7 +6329,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 20.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "o3": {
           "history": [
@@ -6501,7 +6532,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 16.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "no2": {
           "history": [
@@ -6703,7 +6735,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 6.8
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "so2": {
           "history": [
@@ -6905,7 +6938,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 3.6
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "co": {
           "history": [
@@ -7107,7 +7141,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 3.9
             }
-          ]
+          ],
+          "forecast_source": "flat"
         }
       }
     },
@@ -7317,7 +7352,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 102.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm25": {
           "history": [
@@ -7519,7 +7555,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 102.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm10": {
           "history": [
@@ -7721,7 +7758,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 49.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "o3": {
           "history": [
@@ -7923,7 +7961,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 8.5
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "no2": {
           "history": [
@@ -8125,7 +8164,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 0.9
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "so2": {
           "history": [
@@ -8327,7 +8367,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 2.3
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "co": {
           "history": [
@@ -8529,7 +8570,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 7.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         }
       }
     },
@@ -8739,7 +8781,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 59.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm25": {
           "history": [
@@ -8941,7 +8984,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 59.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm10": {
           "history": [
@@ -9143,7 +9187,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 35.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "o3": {
           "history": [
@@ -9345,7 +9390,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 11.3
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "no2": {
           "history": [
@@ -9547,7 +9593,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 7.3
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "so2": {
           "history": [
@@ -9749,7 +9796,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 6.4
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "co": {
           "history": [
@@ -9951,7 +9999,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 10.4
             }
-          ]
+          ],
+          "forecast_source": "flat"
         }
       }
     },
@@ -10161,7 +10210,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 79.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm10": {
           "history": [
@@ -10363,7 +10413,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 79.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "no2": {
           "history": [
@@ -10565,7 +10616,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 11.3
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "so2": {
           "history": [
@@ -10767,7 +10819,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 4.1
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "co": {
           "history": [
@@ -10969,7 +11022,8 @@
               "timestamp": "2026-06-25T04:30:00+00:00",
               "value": 9.7
             }
-          ]
+          ],
+          "forecast_source": "flat"
         }
       }
     },
@@ -11179,7 +11233,8 @@
               "timestamp": "2026-06-05T07:30:00+00:00",
               "value": 45.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "pm10": {
           "history": [
@@ -11381,7 +11436,8 @@
               "timestamp": "2026-06-05T07:30:00+00:00",
               "value": 45.0
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "no2": {
           "history": [
@@ -11583,7 +11639,8 @@
               "timestamp": "2026-06-05T07:30:00+00:00",
               "value": 6.6
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "so2": {
           "history": [
@@ -11785,7 +11842,8 @@
               "timestamp": "2026-06-05T07:30:00+00:00",
               "value": 2.6
             }
-          ]
+          ],
+          "forecast_source": "flat"
         },
         "co": {
           "history": [
@@ -11987,7 +12045,8 @@
               "timestamp": "2026-06-05T07:30:00+00:00",
               "value": 3.5
             }
-          ]
+          ],
+          "forecast_source": "flat"
         }
       }
     }

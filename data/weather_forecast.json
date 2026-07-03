@@ -1,46 +1,46 @@
 {
   "current": {
-    "timestamp": "2026-07-04T01:45+05:30",
-    "temp": 21.2,
-    "feels_like": 22.3,
+    "timestamp": "2026-07-04T02:00+05:30",
+    "temp": 21.3,
+    "feels_like": 22.4,
     "humidity": 91,
     "precipitation": 0.1,
-    "wind_speed": 17.7,
-    "wind_dir": 255,
+    "wind_speed": 18.0,
+    "wind_dir": 254,
     "uv_index": 0.0,
     "weather_code": 51
   },
   "hourly": [
     {
       "timestamp": "2026-07-04T00:00+05:30",
-      "temp": 21.6,
+      "temp": 21.8,
       "precipitation_probability": 42,
       "precipitation": 0.2,
-      "humidity": 87,
+      "humidity": 86,
       "wind_speed": 18.0
     },
     {
       "timestamp": "2026-07-04T01:00+05:30",
-      "temp": 21.3,
+      "temp": 21.6,
       "precipitation_probability": 53,
       "precipitation": 0.2,
-      "humidity": 90,
+      "humidity": 89,
       "wind_speed": 17.7
     },
     {
       "timestamp": "2026-07-04T02:00+05:30",
-      "temp": 21.2,
+      "temp": 21.1,
       "precipitation_probability": 59,
       "precipitation": 0.5,
-      "humidity": 92,
+      "humidity": 93,
       "wind_speed": 18.5
     },
     {
       "timestamp": "2026-07-04T03:00+05:30",
-      "temp": 21.2,
+      "temp": 21.1,
       "precipitation_probability": 55,
       "precipitation": 0.5,
-      "humidity": 92,
+      "humidity": 93,
       "wind_speed": 19.9
     },
     {
@@ -53,7 +53,7 @@
     },
     {
       "timestamp": "2026-07-04T05:00+05:30",
-      "temp": 21.1,
+      "temp": 21.2,
       "precipitation_probability": 39,
       "precipitation": 0.2,
       "humidity": 91,
@@ -69,103 +69,103 @@
     },
     {
       "timestamp": "2026-07-04T07:00+05:30",
-      "temp": 22.2,
+      "temp": 22.0,
       "precipitation_probability": 30,
       "precipitation": 0.2,
-      "humidity": 84,
+      "humidity": 85,
       "wind_speed": 15.6
     },
     {
       "timestamp": "2026-07-04T08:00+05:30",
-      "temp": 22.4,
+      "temp": 22.7,
       "precipitation_probability": 29,
       "precipitation": 0.3,
-      "humidity": 81,
+      "humidity": 79,
       "wind_speed": 18.6
     },
     {
       "timestamp": "2026-07-04T09:00+05:30",
-      "temp": 24.1,
+      "temp": 23.5,
       "precipitation_probability": 35,
       "precipitation": 0.3,
-      "humidity": 73,
+      "humidity": 76,
       "wind_speed": 25.1
     },
     {
       "timestamp": "2026-07-04T10:00+05:30",
-      "temp": 25.7,
+      "temp": 24.7,
       "precipitation_probability": 44,
       "precipitation": 0.3,
-      "humidity": 66,
+      "humidity": 70,
       "wind_speed": 26.6
     },
     {
       "timestamp": "2026-07-04T11:00+05:30",
-      "temp": 27.1,
+      "temp": 26.6,
       "precipitation_probability": 51,
       "precipitation": 0.2,
-      "humidity": 58,
+      "humidity": 60,
       "wind_speed": 26.6
     },
     {
       "timestamp": "2026-07-04T12:00+05:30",
-      "temp": 26.9,
+      "temp": 27.6,
       "precipitation_probability": 53,
       "precipitation": 0.1,
-      "humidity": 57,
+      "humidity": 55,
       "wind_speed": 27.1
     },
     {
       "timestamp": "2026-07-04T13:00+05:30",
-      "temp": 27.0,
+      "temp": 27.2,
       "precipitation_probability": 54,
       "precipitation": 0.1,
-      "humidity": 55,
+      "humidity": 54,
       "wind_speed": 26.0
     },
     {
       "timestamp": "2026-07-04T14:00+05:30",
-      "temp": 27.8,
+      "temp": 27.5,
       "precipitation_probability": 55,
       "precipitation": 0.0,
-      "humidity": 50,
+      "humidity": 51,
       "wind_speed": 27.5
     },
     {
       "timestamp": "2026-07-04T15:00+05:30",
-      "temp": 26.2,
+      "temp": 27.3,
       "precipitation_probability": 61,
       "precipitation": 0.1,
-      "humidity": 56,
+      "humidity": 53,
       "wind_speed": 28.1
     },
     {
       "timestamp": "2026-07-04T16:00+05:30",
-      "temp": 24.1,
+      "temp": 26.8,
       "precipitation_probability": 67,
       "precipitation": 0.4,
-      "humidity": 63,
+      "humidity": 54,
       "wind_speed": 17.4
     },
     {
       "timestamp": "2026-07-04T17:00+05:30",
-      "temp": 24.3,
+      "temp": 24.9,
       "precipitation_probability": 69,
       "precipitation": 0.4,
-      "humidity": 67,
+      "humidity": 65,
       "wind_speed": 21.5
     },
     {
       "timestamp": "2026-07-04T18:00+05:30",
-      "temp": 23.6,
+      "temp": 22.5,
       "precipitation_probability": 62,
       "precipitation": 0.3,
-      "humidity": 75,
+      "humidity": 80,
       "wind_speed": 19.6
     },
     {
       "timestamp": "2026-07-04T19:00+05:30",
-      "temp": 22.8,
+      "temp": 22.7,
       "precipitation_probability": 49,
       "precipitation": 0.3,
       "humidity": 79,
@@ -173,34 +173,34 @@
     },
     {
       "timestamp": "2026-07-04T20:00+05:30",
-      "temp": 22.3,
+      "temp": 22.6,
       "precipitation_probability": 39,
       "precipitation": 0.1,
-      "humidity": 82,
+      "humidity": 80,
       "wind_speed": 18.0
     },
     {
       "timestamp": "2026-07-04T21:00+05:30",
-      "temp": 22.1,
+      "temp": 22.5,
       "precipitation_probability": 33,
       "precipitation": 0.0,
-      "humidity": 83,
+      "humidity": 81,
       "wind_speed": 19.0
     },
     {
       "timestamp": "2026-07-04T22:00+05:30",
-      "temp": 21.7,
+      "temp": 22.1,
       "precipitation_probability": 28,
       "precipitation": 0.0,
-      "humidity": 84,
+      "humidity": 82,
       "wind_speed": 18.8
     },
     {
       "timestamp": "2026-07-04T23:00+05:30",
-      "temp": 21.3,
+      "temp": 21.4,
       "precipitation_probability": 25,
       "precipitation": 0.5,
-      "humidity": 87,
+      "humidity": 86,
       "wind_speed": 17.9
     },
     {
@@ -213,39 +213,39 @@
     },
     {
       "timestamp": "2026-07-05T01:00+05:30",
-      "temp": 20.8,
+      "temp": 21.0,
       "precipitation_probability": 26,
       "precipitation": 0.0,
-      "humidity": 90,
+      "humidity": 89,
       "wind_speed": 18.4
     },
     {
       "timestamp": "2026-07-05T02:00+05:30",
-      "temp": 20.9,
+      "temp": 21.0,
       "precipitation_probability": 27,
       "precipitation": 0.0,
-      "humidity": 89,
+      "humidity": 88,
       "wind_speed": 19.2
     },
     {
       "timestamp": "2026-07-05T03:00+05:30",
-      "temp": 20.8,
+      "temp": 21.0,
       "precipitation_probability": 28,
       "precipitation": 0.0,
-      "humidity": 88,
+      "humidity": 87,
       "wind_speed": 19.9
     },
     {
       "timestamp": "2026-07-05T04:00+05:30",
-      "temp": 20.8,
+      "temp": 20.9,
       "precipitation_probability": 28,
       "precipitation": 0.0,
-      "humidity": 87,
+      "humidity": 86,
       "wind_speed": 19.0
     },
     {
       "timestamp": "2026-07-05T05:00+05:30",
-      "temp": 20.8,
+      "temp": 20.9,
       "precipitation_probability": 29,
       "precipitation": 0.0,
       "humidity": 87,
@@ -253,7 +253,7 @@
     },
     {
       "timestamp": "2026-07-05T06:00+05:30",
-      "temp": 20.9,
+      "temp": 20.8,
       "precipitation_probability": 30,
       "precipitation": 0.0,
       "humidity": 87,
@@ -261,47 +261,47 @@
     },
     {
       "timestamp": "2026-07-05T07:00+05:30",
-      "temp": 21.5,
+      "temp": 21.1,
       "precipitation_probability": 32,
       "precipitation": 0.1,
-      "humidity": 84,
+      "humidity": 86,
       "wind_speed": 15.3
     },
     {
       "timestamp": "2026-07-05T08:00+05:30",
-      "temp": 21.8,
+      "temp": 21.9,
       "precipitation_probability": 33,
       "precipitation": 0.3,
-      "humidity": 84,
+      "humidity": 83,
       "wind_speed": 17.3
     },
     {
       "timestamp": "2026-07-05T09:00+05:30",
-      "temp": 23.0,
+      "temp": 22.4,
       "precipitation_probability": 33,
       "precipitation": 0.2,
-      "humidity": 77,
+      "humidity": 80,
       "wind_speed": 19.3
     },
     {
       "timestamp": "2026-07-05T10:00+05:30",
-      "temp": 23.7,
+      "temp": 23.4,
       "precipitation_probability": 33,
       "precipitation": 0.1,
-      "humidity": 74,
+      "humidity": 75,
       "wind_speed": 22.9
     },
     {
       "timestamp": "2026-07-05T11:00+05:30",
-      "temp": 25.2,
+      "temp": 24.5,
       "precipitation_probability": 35,
       "precipitation": 0.1,
-      "humidity": 66,
+      "humidity": 69,
       "wind_speed": 22.9
     },
     {
       "timestamp": "2026-07-05T12:00+05:30",
-      "temp": 25.4,
+      "temp": 25.5,
       "precipitation_probability": 43,
       "precipitation": 0.0,
       "humidity": 64,
@@ -309,23 +309,23 @@
     },
     {
       "timestamp": "2026-07-05T13:00+05:30",
-      "temp": 26.6,
+      "temp": 25.8,
       "precipitation_probability": 53,
       "precipitation": 0.0,
-      "humidity": 57,
+      "humidity": 60,
       "wind_speed": 26.5
     },
     {
       "timestamp": "2026-07-05T14:00+05:30",
-      "temp": 26.9,
+      "temp": 26.7,
       "precipitation_probability": 59,
       "precipitation": 0.0,
-      "humidity": 54,
+      "humidity": 55,
       "wind_speed": 26.0
     },
     {
       "timestamp": "2026-07-05T15:00+05:30",
-      "temp": 26.6,
+      "temp": 26.5,
       "precipitation_probability": 57,
       "precipitation": 0.0,
       "humidity": 56,
@@ -333,26 +333,26 @@
     },
     {
       "timestamp": "2026-07-05T16:00+05:30",
-      "temp": 26.6,
+      "temp": 27.2,
       "precipitation_probability": 52,
       "precipitation": 0.0,
-      "humidity": 55,
+      "humidity": 53,
       "wind_speed": 26.1
     },
     {
       "timestamp": "2026-07-05T17:00+05:30",
-      "temp": 26.0,
+      "temp": 26.3,
       "precipitation_probability": 43,
       "precipitation": 0.0,
-      "humidity": 57,
+      "humidity": 56,
       "wind_speed": 22.8
     },
     {
       "timestamp": "2026-07-05T18:00+05:30",
-      "temp": 24.7,
+      "temp": 25.0,
       "precipitation_probability": 30,
       "precipitation": 0.0,
-      "humidity": 63,
+      "humidity": 62,
       "wind_speed": 23.7
     },
     {
@@ -365,7 +365,7 @@
     },
     {
       "timestamp": "2026-07-05T20:00+05:30",
-      "temp": 22.6,
+      "temp": 22.8,
       "precipitation_probability": 4,
       "precipitation": 0.0,
       "humidity": 73,
@@ -381,7 +381,7 @@
     },
     {
       "timestamp": "2026-07-05T22:00+05:30",
-      "temp": 21.6,
+      "temp": 21.5,
       "precipitation_probability": 3,
       "precipitation": 0.0,
       "humidity": 83,
@@ -389,23 +389,23 @@
     },
     {
       "timestamp": "2026-07-05T23:00+05:30",
-      "temp": 21.1,
+      "temp": 21.3,
       "precipitation_probability": 4,
       "precipitation": 0.0,
-      "humidity": 86,
+      "humidity": 85,
       "wind_speed": 17.3
     },
     {
       "timestamp": "2026-07-06T00:00+05:30",
-      "temp": 20.9,
+      "temp": 21.0,
       "precipitation_probability": 3,
       "precipitation": 0.0,
-      "humidity": 87,
+      "humidity": 86,
       "wind_speed": 17.9
     },
     {
       "timestamp": "2026-07-06T01:00+05:30",
-      "temp": 20.8,
+      "temp": 20.9,
       "precipitation_probability": 3,
       "precipitation": 0.0,
       "humidity": 87,
@@ -413,7 +413,7 @@
     },
     {
       "timestamp": "2026-07-06T02:00+05:30",
-      "temp": 20.6,
+      "temp": 20.7,
       "precipitation_probability": 2,
       "precipitation": 0.0,
       "humidity": 88,
@@ -421,23 +421,23 @@
     },
     {
       "timestamp": "2026-07-06T03:00+05:30",
-      "temp": 20.4,
+      "temp": 20.6,
       "precipitation_probability": 1,
       "precipitation": 0.0,
-      "humidity": 90,
+      "humidity": 89,
       "wind_speed": 18.3
     },
     {
       "timestamp": "2026-07-06T04:00+05:30",
-      "temp": 20.2,
+      "temp": 20.4,
       "precipitation_probability": 1,
       "precipitation": 0.0,
-      "humidity": 90,
+      "humidity": 89,
       "wind_speed": 17.1
     },
     {
       "timestamp": "2026-07-06T05:00+05:30",
-      "temp": 20.0,
+      "temp": 20.1,
       "precipitation_probability": 0,
       "precipitation": 0.0,
       "humidity": 89,
@@ -445,119 +445,119 @@
     },
     {
       "timestamp": "2026-07-06T06:00+05:30",
-      "temp": 20.4,
+      "temp": 20.2,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 87,
+      "humidity": 88,
       "wind_speed": 17.6
     },
     {
       "timestamp": "2026-07-06T07:00+05:30",
-      "temp": 21.2,
+      "temp": 21.3,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 83,
+      "humidity": 82,
       "wind_speed": 15.6
     },
     {
       "timestamp": "2026-07-06T08:00+05:30",
-      "temp": 23.3,
+      "temp": 23.1,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 73,
+      "humidity": 74,
       "wind_speed": 22.2
     },
     {
       "timestamp": "2026-07-06T09:00+05:30",
-      "temp": 24.6,
+      "temp": 25.0,
       "precipitation_probability": 13,
       "precipitation": 0.0,
-      "humidity": 66,
+      "humidity": 64,
       "wind_speed": 22.7
     },
     {
       "timestamp": "2026-07-06T10:00+05:30",
-      "temp": 25.4,
+      "temp": 26.7,
       "precipitation_probability": 32,
       "precipitation": 0.1,
-      "humidity": 62,
+      "humidity": 58,
       "wind_speed": 20.3
     },
     {
       "timestamp": "2026-07-06T11:00+05:30",
-      "temp": 27.5,
+      "temp": 27.8,
       "precipitation_probability": 49,
       "precipitation": 0.1,
-      "humidity": 57,
+      "humidity": 56,
       "wind_speed": 25.7
     },
     {
       "timestamp": "2026-07-06T12:00+05:30",
-      "temp": 28.4,
+      "temp": 28.7,
       "precipitation_probability": 64,
       "precipitation": 0.1,
-      "humidity": 52,
+      "humidity": 51,
       "wind_speed": 27.2
     },
     {
       "timestamp": "2026-07-06T13:00+05:30",
-      "temp": 29.0,
+      "temp": 29.3,
       "precipitation_probability": 78,
       "precipitation": 0.2,
-      "humidity": 52,
+      "humidity": 51,
       "wind_speed": 26.9
     },
     {
       "timestamp": "2026-07-06T14:00+05:30",
-      "temp": 29.2,
+      "temp": 30.1,
       "precipitation_probability": 88,
       "precipitation": 0.0,
-      "humidity": 50,
+      "humidity": 47,
       "wind_speed": 27.8
     },
     {
       "timestamp": "2026-07-06T15:00+05:30",
-      "temp": 28.7,
+      "temp": 29.3,
       "precipitation_probability": 93,
       "precipitation": 0.2,
-      "humidity": 49,
+      "humidity": 48,
       "wind_speed": 27.2
     },
     {
       "timestamp": "2026-07-06T16:00+05:30",
-      "temp": 27.8,
+      "temp": 28.6,
       "precipitation_probability": 93,
       "precipitation": 0.5,
-      "humidity": 53,
+      "humidity": 50,
       "wind_speed": 26.9
     },
     {
       "timestamp": "2026-07-06T17:00+05:30",
-      "temp": 27.1,
+      "temp": 27.4,
       "precipitation_probability": 86,
       "precipitation": 0.2,
-      "humidity": 56,
+      "humidity": 55,
       "wind_speed": 24.7
     },
     {
       "timestamp": "2026-07-06T18:00+05:30",
-      "temp": 24.6,
+      "temp": 25.5,
       "precipitation_probability": 69,
       "precipitation": 0.0,
-      "humidity": 69,
+      "humidity": 66,
       "wind_speed": 20.3
     },
     {
       "timestamp": "2026-07-06T19:00+05:30",
-      "temp": 24.0,
+      "temp": 24.2,
       "precipitation_probability": 45,
       "precipitation": 0.1,
-      "humidity": 73,
+      "humidity": 72,
       "wind_speed": 18.6
     },
     {
       "timestamp": "2026-07-06T20:00+05:30",
-      "temp": 23.3,
+      "temp": 23.4,
       "precipitation_probability": 25,
       "precipitation": 0.0,
       "humidity": 78,
@@ -565,55 +565,55 @@
     },
     {
       "timestamp": "2026-07-06T21:00+05:30",
-      "temp": 22.4,
+      "temp": 22.8,
       "precipitation_probability": 14,
       "precipitation": 0.0,
-      "humidity": 83,
+      "humidity": 82,
       "wind_speed": 18.3
     },
     {
       "timestamp": "2026-07-06T22:00+05:30",
-      "temp": 21.9,
+      "temp": 22.2,
       "precipitation_probability": 8,
       "precipitation": 0.0,
-      "humidity": 86,
+      "humidity": 85,
       "wind_speed": 17.8
     },
     {
       "timestamp": "2026-07-06T23:00+05:30",
-      "temp": 21.4,
+      "temp": 21.8,
       "precipitation_probability": 4,
       "precipitation": 0.0,
-      "humidity": 88,
+      "humidity": 86,
       "wind_speed": 17.6
     },
     {
       "timestamp": "2026-07-07T00:00+05:30",
-      "temp": 21.2,
+      "temp": 21.6,
       "precipitation_probability": 2,
       "precipitation": 0.0,
-      "humidity": 89,
+      "humidity": 87,
       "wind_speed": 17.9
     },
     {
       "timestamp": "2026-07-07T01:00+05:30",
-      "temp": 21.0,
+      "temp": 21.5,
       "precipitation_probability": 2,
       "precipitation": 0.0,
-      "humidity": 89,
+      "humidity": 86,
       "wind_speed": 18.4
     },
     {
       "timestamp": "2026-07-07T02:00+05:30",
-      "temp": 21.0,
+      "temp": 21.2,
       "precipitation_probability": 2,
       "precipitation": 0.0,
-      "humidity": 89,
+      "humidity": 88,
       "wind_speed": 18.5
     },
     {
       "timestamp": "2026-07-07T03:00+05:30",
-      "temp": 20.9,
+      "temp": 21.0,
       "precipitation_probability": 3,
       "precipitation": 0.0,
       "humidity": 89,
@@ -621,23 +621,23 @@
     },
     {
       "timestamp": "2026-07-07T04:00+05:30",
-      "temp": 21.1,
+      "temp": 21.2,
       "precipitation_probability": 3,
       "precipitation": 0.0,
-      "humidity": 88,
+      "humidity": 87,
       "wind_speed": 18.3
     },
     {
       "timestamp": "2026-07-07T05:00+05:30",
-      "temp": 21.0,
+      "temp": 21.1,
       "precipitation_probability": 4,
       "precipitation": 0.0,
-      "humidity": 88,
+      "humidity": 87,
       "wind_speed": 18.5
     },
     {
       "timestamp": "2026-07-07T06:00+05:30",
-      "temp": 21.4,
+      "temp": 21.5,
       "precipitation_probability": 2,
       "precipitation": 0.0,
       "humidity": 85,
@@ -645,111 +645,111 @@
     },
     {
       "timestamp": "2026-07-07T07:00+05:30",
-      "temp": 22.1,
+      "temp": 22.4,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 81,
+      "humidity": 80,
       "wind_speed": 21.6
     },
     {
       "timestamp": "2026-07-07T08:00+05:30",
-      "temp": 23.0,
+      "temp": 23.7,
       "precipitation_probability": 2,
       "precipitation": 0.1,
-      "humidity": 74,
+      "humidity": 72,
       "wind_speed": 23.0
     },
     {
       "timestamp": "2026-07-07T09:00+05:30",
-      "temp": 24.2,
+      "temp": 25.3,
       "precipitation_probability": 13,
       "precipitation": 0.0,
-      "humidity": 68,
+      "humidity": 64,
       "wind_speed": 23.5
     },
     {
       "timestamp": "2026-07-07T10:00+05:30",
-      "temp": 25.5,
+      "temp": 27.1,
       "precipitation_probability": 30,
       "precipitation": 0.0,
-      "humidity": 62,
+      "humidity": 56,
       "wind_speed": 23.5
     },
     {
       "timestamp": "2026-07-07T11:00+05:30",
-      "temp": 26.7,
+      "temp": 27.2,
       "precipitation_probability": 45,
       "precipitation": 0.0,
-      "humidity": 59,
+      "humidity": 57,
       "wind_speed": 24.1
     },
     {
       "timestamp": "2026-07-07T12:00+05:30",
-      "temp": 27.6,
+      "temp": 28.3,
       "precipitation_probability": 59,
       "precipitation": 0.2,
-      "humidity": 55,
+      "humidity": 53,
       "wind_speed": 25.9
     },
     {
       "timestamp": "2026-07-07T13:00+05:30",
-      "temp": 28.4,
+      "temp": 29.3,
       "precipitation_probability": 72,
       "precipitation": 0.2,
-      "humidity": 52,
+      "humidity": 50,
       "wind_speed": 28.3
     },
     {
       "timestamp": "2026-07-07T14:00+05:30",
-      "temp": 28.7,
+      "temp": 29.8,
       "precipitation_probability": 80,
       "precipitation": 0.2,
-      "humidity": 51,
+      "humidity": 48,
       "wind_speed": 30.0
     },
     {
       "timestamp": "2026-07-07T15:00+05:30",
-      "temp": 28.3,
+      "temp": 29.4,
       "precipitation_probability": 83,
       "precipitation": 0.2,
-      "humidity": 52,
+      "humidity": 49,
       "wind_speed": 30.0
     },
     {
       "timestamp": "2026-07-07T16:00+05:30",
-      "temp": 27.4,
+      "temp": 28.6,
       "precipitation_probability": 81,
       "precipitation": 0.2,
-      "humidity": 55,
+      "humidity": 51,
       "wind_speed": 29.1
     },
     {
       "timestamp": "2026-07-07T17:00+05:30",
-      "temp": 26.5,
+      "temp": 27.5,
       "precipitation_probability": 73,
       "precipitation": 0.2,
-      "humidity": 58,
+      "humidity": 55,
       "wind_speed": 27.6
     },
     {
       "timestamp": "2026-07-07T18:00+05:30",
-      "temp": 25.4,
+      "temp": 26.2,
       "precipitation_probability": 55,
       "precipitation": 0.0,
-      "humidity": 64,
+      "humidity": 61,
       "wind_speed": 25.5
     },
     {
       "timestamp": "2026-07-07T19:00+05:30",
-      "temp": 24.3,
+      "temp": 24.6,
       "precipitation_probability": 31,
       "precipitation": 0.0,
-      "humidity": 72,
+      "humidity": 70,
       "wind_speed": 22.9
     },
     {
       "timestamp": "2026-07-07T20:00+05:30",
-      "temp": 23.3,
+      "temp": 23.4,
       "precipitation_probability": 12,
       "precipitation": 0.0,
       "humidity": 78,
@@ -757,39 +757,39 @@
     },
     {
       "timestamp": "2026-07-07T21:00+05:30",
-      "temp": 22.7,
+      "temp": 22.8,
       "precipitation_probability": 4,
       "precipitation": 0.0,
-      "humidity": 82,
+      "humidity": 81,
       "wind_speed": 19.9
     },
     {
       "timestamp": "2026-07-07T22:00+05:30",
-      "temp": 22.3,
+      "temp": 22.5,
       "precipitation_probability": 1,
       "precipitation": 0.0,
-      "humidity": 84,
+      "humidity": 83,
       "wind_speed": 19.2
     },
     {
       "timestamp": "2026-07-07T23:00+05:30",
-      "temp": 21.9,
+      "temp": 22.2,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 85,
+      "humidity": 84,
       "wind_speed": 19.0
     },
     {
       "timestamp": "2026-07-08T00:00+05:30",
-      "temp": 21.7,
+      "temp": 21.8,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 87,
+      "humidity": 86,
       "wind_speed": 18.8
     },
     {
       "timestamp": "2026-07-08T01:00+05:30",
-      "temp": 21.5,
+      "temp": 21.6,
       "precipitation_probability": 0,
       "precipitation": 0.0,
       "humidity": 87,
@@ -813,135 +813,135 @@
     },
     {
       "timestamp": "2026-07-08T04:00+05:30",
-      "temp": 21.0,
+      "temp": 21.2,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 89,
+      "humidity": 88,
       "wind_speed": 18.4
     },
     {
       "timestamp": "2026-07-08T05:00+05:30",
-      "temp": 21.1,
+      "temp": 21.3,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 88,
+      "humidity": 87,
       "wind_speed": 19.0
     },
     {
       "timestamp": "2026-07-08T06:00+05:30",
-      "temp": 21.8,
+      "temp": 21.7,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 84,
+      "humidity": 85,
       "wind_speed": 20.8
     },
     {
       "timestamp": "2026-07-08T07:00+05:30",
-      "temp": 22.9,
+      "temp": 22.2,
       "precipitation_probability": 1,
       "precipitation": 0.0,
-      "humidity": 79,
+      "humidity": 82,
       "wind_speed": 23.5
     },
     {
       "timestamp": "2026-07-08T08:00+05:30",
-      "temp": 23.9,
+      "temp": 22.9,
       "precipitation_probability": 2,
       "precipitation": 0.0,
-      "humidity": 74,
+      "humidity": 78,
       "wind_speed": 25.6
     },
     {
       "timestamp": "2026-07-08T09:00+05:30",
-      "temp": 24.9,
+      "temp": 23.9,
       "precipitation_probability": 4,
       "precipitation": 0.1,
-      "humidity": 68,
+      "humidity": 73,
       "wind_speed": 26.7
     },
     {
       "timestamp": "2026-07-08T10:00+05:30",
-      "temp": 26.0,
+      "temp": 25.0,
       "precipitation_probability": 6,
       "precipitation": 0.1,
-      "humidity": 62,
+      "humidity": 66,
       "wind_speed": 27.1
     },
     {
       "timestamp": "2026-07-08T11:00+05:30",
-      "temp": 27.0,
+      "temp": 25.9,
       "precipitation_probability": 10,
       "precipitation": 0.1,
-      "humidity": 58,
+      "humidity": 62,
       "wind_speed": 27.3
     },
     {
       "timestamp": "2026-07-08T12:00+05:30",
-      "temp": 28.0,
+      "temp": 26.5,
       "precipitation_probability": 15,
       "precipitation": 0.0,
-      "humidity": 54,
+      "humidity": 59,
       "wind_speed": 27.1
     },
     {
       "timestamp": "2026-07-08T13:00+05:30",
-      "temp": 28.9,
+      "temp": 27.0,
       "precipitation_probability": 22,
       "precipitation": 0.0,
-      "humidity": 51,
+      "humidity": 57,
       "wind_speed": 26.5
     },
     {
       "timestamp": "2026-07-08T14:00+05:30",
-      "temp": 29.3,
+      "temp": 27.2,
       "precipitation_probability": 31,
       "precipitation": 0.0,
-      "humidity": 49,
+      "humidity": 56,
       "wind_speed": 26.1
     },
     {
       "timestamp": "2026-07-08T15:00+05:30",
-      "temp": 29.0,
+      "temp": 27.2,
       "precipitation_probability": 45,
       "precipitation": 0.0,
-      "humidity": 50,
+      "humidity": 56,
       "wind_speed": 26.0
     },
     {
       "timestamp": "2026-07-08T16:00+05:30",
-      "temp": 28.2,
+      "temp": 26.9,
       "precipitation_probability": 61,
       "precipitation": 0.0,
-      "humidity": 53,
+      "humidity": 57,
       "wind_speed": 25.8
     },
     {
       "timestamp": "2026-07-08T17:00+05:30",
-      "temp": 27.2,
+      "temp": 26.4,
       "precipitation_probability": 67,
       "precipitation": 0.0,
-      "humidity": 57,
+      "humidity": 60,
       "wind_speed": 25.0
     },
     {
       "timestamp": "2026-07-08T18:00+05:30",
-      "temp": 26.1,
+      "temp": 25.7,
       "precipitation_probability": 52,
       "precipitation": 0.0,
-      "humidity": 62,
+      "humidity": 64,
       "wind_speed": 23.0
     },
     {
       "timestamp": "2026-07-08T19:00+05:30",
-      "temp": 24.8,
+      "temp": 24.7,
       "precipitation_probability": 27,
       "precipitation": 0.0,
-      "humidity": 68,
+      "humidity": 69,
       "wind_speed": 20.2
     },
     {
       "timestamp": "2026-07-08T20:00+05:30",
-      "temp": 23.7,
+      "temp": 23.8,
       "precipitation_probability": 8,
       "precipitation": 0.0,
       "humidity": 74,
@@ -957,79 +957,79 @@
     },
     {
       "timestamp": "2026-07-08T22:00+05:30",
-      "temp": 22.4,
+      "temp": 22.3,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 80,
+      "humidity": 81,
       "wind_speed": 18.7
     },
     {
       "timestamp": "2026-07-08T23:00+05:30",
-      "temp": 22.1,
+      "temp": 21.8,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 82,
+      "humidity": 83,
       "wind_speed": 19.3
     },
     {
       "timestamp": "2026-07-09T00:00+05:30",
-      "temp": 21.9,
+      "temp": 21.6,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 84,
+      "humidity": 85,
       "wind_speed": 19.3
     },
     {
       "timestamp": "2026-07-09T01:00+05:30",
-      "temp": 21.8,
+      "temp": 21.5,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 85,
+      "humidity": 86,
       "wind_speed": 19.2
     },
     {
       "timestamp": "2026-07-09T02:00+05:30",
-      "temp": 21.7,
-      "precipitation_probability": 0,
-      "precipitation": 0.0,
-      "humidity": 85,
-      "wind_speed": 19.1
-    },
-    {
-      "timestamp": "2026-07-09T03:00+05:30",
-      "temp": 21.6,
-      "precipitation_probability": 0,
-      "precipitation": 0.0,
-      "humidity": 86,
-      "wind_speed": 19.1
-    },
-    {
-      "timestamp": "2026-07-09T04:00+05:30",
-      "temp": 21.5,
+      "temp": 21.4,
       "precipitation_probability": 0,
       "precipitation": 0.0,
       "humidity": 87,
       "wind_speed": 19.1
     },
     {
-      "timestamp": "2026-07-09T05:00+05:30",
-      "temp": 21.7,
+      "timestamp": "2026-07-09T03:00+05:30",
+      "temp": 21.3,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 85,
+      "humidity": 88,
+      "wind_speed": 19.1
+    },
+    {
+      "timestamp": "2026-07-09T04:00+05:30",
+      "temp": 21.1,
+      "precipitation_probability": 0,
+      "precipitation": 0.0,
+      "humidity": 89,
+      "wind_speed": 19.1
+    },
+    {
+      "timestamp": "2026-07-09T05:00+05:30",
+      "temp": 21.3,
+      "precipitation_probability": 0,
+      "precipitation": 0.0,
+      "humidity": 88,
       "wind_speed": 19.6
     },
     {
       "timestamp": "2026-07-09T06:00+05:30",
-      "temp": 22.2,
+      "temp": 21.9,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 81,
+      "humidity": 83,
       "wind_speed": 21.0
     },
     {
       "timestamp": "2026-07-09T07:00+05:30",
-      "temp": 22.9,
+      "temp": 22.7,
       "precipitation_probability": 0,
       "precipitation": 0.0,
       "humidity": 76,
@@ -1045,79 +1045,79 @@
     },
     {
       "timestamp": "2026-07-09T09:00+05:30",
-      "temp": 25.0,
+      "temp": 25.3,
       "precipitation_probability": 5,
       "precipitation": 0.0,
-      "humidity": 64,
+      "humidity": 63,
       "wind_speed": 24.7
     },
     {
       "timestamp": "2026-07-09T10:00+05:30",
-      "temp": 26.3,
+      "temp": 26.9,
       "precipitation_probability": 10,
       "precipitation": 0.0,
-      "humidity": 59,
+      "humidity": 57,
       "wind_speed": 24.6
     },
     {
       "timestamp": "2026-07-09T11:00+05:30",
-      "temp": 27.2,
+      "temp": 28.2,
       "precipitation_probability": 16,
       "precipitation": 0.0,
-      "humidity": 55,
+      "humidity": 52,
       "wind_speed": 24.6
     },
     {
       "timestamp": "2026-07-09T12:00+05:30",
-      "temp": 27.5,
+      "temp": 29.1,
       "precipitation_probability": 24,
       "precipitation": 0.0,
-      "humidity": 53,
+      "humidity": 49,
       "wind_speed": 22.9
     },
     {
       "timestamp": "2026-07-09T13:00+05:30",
-      "temp": 27.7,
+      "temp": 29.7,
       "precipitation_probability": 34,
       "precipitation": 0.0,
-      "humidity": 52,
+      "humidity": 46,
       "wind_speed": 22.2
     },
     {
       "timestamp": "2026-07-09T14:00+05:30",
-      "temp": 27.7,
+      "temp": 29.8,
       "precipitation_probability": 43,
       "precipitation": 0.0,
-      "humidity": 52,
+      "humidity": 46,
       "wind_speed": 21.1
     },
     {
       "timestamp": "2026-07-09T15:00+05:30",
-      "temp": 27.6,
+      "temp": 27.9,
       "precipitation_probability": 53,
       "precipitation": 0.2,
-      "humidity": 56,
+      "humidity": 55,
       "wind_speed": 20.0
     },
     {
       "timestamp": "2026-07-09T16:00+05:30",
-      "temp": 27.3,
+      "temp": 27.4,
       "precipitation_probability": 62,
       "precipitation": 0.2,
-      "humidity": 58,
+      "humidity": 57,
       "wind_speed": 19.1
     },
     {
       "timestamp": "2026-07-09T17:00+05:30",
-      "temp": 26.9,
+      "temp": 26.8,
       "precipitation_probability": 67,
       "precipitation": 0.2,
-      "humidity": 59,
+      "humidity": 60,
       "wind_speed": 18.2
     },
     {
       "timestamp": "2026-07-09T18:00+05:30",
-      "temp": 26.3,
+      "temp": 26.1,
       "precipitation_probability": 64,
       "precipitation": 0.1,
       "humidity": 62,
@@ -1125,34 +1125,34 @@
     },
     {
       "timestamp": "2026-07-09T19:00+05:30",
-      "temp": 25.3,
+      "temp": 25.1,
       "precipitation_probability": 57,
       "precipitation": 0.1,
-      "humidity": 65,
+      "humidity": 66,
       "wind_speed": 16.9
     },
     {
       "timestamp": "2026-07-09T20:00+05:30",
-      "temp": 24.3,
+      "temp": 24.1,
       "precipitation_probability": 49,
       "precipitation": 0.1,
-      "humidity": 69,
+      "humidity": 70,
       "wind_speed": 16.5
     },
     {
       "timestamp": "2026-07-09T21:00+05:30",
-      "temp": 23.2,
+      "temp": 23.0,
       "precipitation_probability": 40,
       "precipitation": 0.1,
-      "humidity": 73,
+      "humidity": 74,
       "wind_speed": 16.2
     },
     {
       "timestamp": "2026-07-09T22:00+05:30",
-      "temp": 22.2,
+      "temp": 22.1,
       "precipitation_probability": 30,
       "precipitation": 0.1,
-      "humidity": 77,
+      "humidity": 78,
       "wind_speed": 16.0
     },
     {
@@ -1165,98 +1165,98 @@
     },
     {
       "timestamp": "2026-07-10T00:00+05:30",
-      "temp": 20.9,
+      "temp": 21.0,
       "precipitation_probability": 16,
       "precipitation": 0.0,
-      "humidity": 85,
+      "humidity": 84,
       "wind_speed": 15.7
     },
     {
       "timestamp": "2026-07-10T01:00+05:30",
-      "temp": 20.5,
+      "temp": 20.7,
       "precipitation_probability": 12,
       "precipitation": 0.0,
-      "humidity": 88,
+      "humidity": 87,
       "wind_speed": 15.7
     },
     {
       "timestamp": "2026-07-10T02:00+05:30",
-      "temp": 20.1,
+      "temp": 20.6,
       "precipitation_probability": 8,
       "precipitation": 0.0,
-      "humidity": 92,
+      "humidity": 89,
       "wind_speed": 15.6
     },
     {
       "timestamp": "2026-07-10T03:00+05:30",
-      "temp": 20.0,
+      "temp": 20.6,
       "precipitation_probability": 5,
       "precipitation": 0.0,
-      "humidity": 94,
+      "humidity": 91,
       "wind_speed": 15.7
     },
     {
       "timestamp": "2026-07-10T04:00+05:30",
-      "temp": 20.0,
+      "temp": 20.7,
       "precipitation_probability": 2,
       "precipitation": 0.0,
-      "humidity": 95,
+      "humidity": 91,
       "wind_speed": 15.9
     },
     {
       "timestamp": "2026-07-10T05:00+05:30",
-      "temp": 20.4,
+      "temp": 21.2,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 93,
+      "humidity": 89,
       "wind_speed": 16.2
     },
     {
       "timestamp": "2026-07-10T06:00+05:30",
-      "temp": 21.2,
+      "temp": 22.0,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 88,
+      "humidity": 83,
       "wind_speed": 16.7
     },
     {
       "timestamp": "2026-07-10T07:00+05:30",
-      "temp": 22.4,
+      "temp": 23.4,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 80,
+      "humidity": 75,
       "wind_speed": 17.7
     },
     {
       "timestamp": "2026-07-10T08:00+05:30",
-      "temp": 23.8,
+      "temp": 24.9,
       "precipitation_probability": 0,
       "precipitation": 0.0,
-      "humidity": 72,
+      "humidity": 67,
       "wind_speed": 18.6
     },
     {
       "timestamp": "2026-07-10T09:00+05:30",
-      "temp": 25.3,
+      "temp": 26.4,
       "precipitation_probability": 1,
       "precipitation": 0.0,
-      "humidity": 64,
+      "humidity": 60,
       "wind_speed": 19.7
     },
     {
       "timestamp": "2026-07-10T10:00+05:30",
-      "temp": 26.5,
+      "temp": 27.5,
       "precipitation_probability": 3,
       "precipitation": 0.0,
-      "humidity": 59,
+      "humidity": 55,
       "wind_speed": 20.4
     },
     {
       "timestamp": "2026-07-10T11:00+05:30",
-      "temp": 27.4,
+      "temp": 28.1,
       "precipitation_probability": 8,
       "precipitation": 0.0,
-      "humidity": 55,
+      "humidity": 53,
       "wind_speed": 20.7
     },
     {
@@ -1269,97 +1269,97 @@
     },
     {
       "timestamp": "2026-07-10T13:00+05:30",
-      "temp": 28.3,
+      "temp": 27.4,
       "precipitation_probability": 30,
       "precipitation": 0.3,
-      "humidity": 54,
+      "humidity": 57,
       "wind_speed": 19.6
     },
     {
       "timestamp": "2026-07-10T14:00+05:30",
-      "temp": 28.5,
+      "temp": 26.4,
       "precipitation_probability": 41,
       "precipitation": 0.3,
-      "humidity": 55,
+      "humidity": 62,
       "wind_speed": 18.7
     },
     {
       "timestamp": "2026-07-10T15:00+05:30",
-      "temp": 28.5,
+      "temp": 25.3,
       "precipitation_probability": 52,
       "precipitation": 0.3,
-      "humidity": 57,
+      "humidity": 69,
       "wind_speed": 17.7
     },
     {
       "timestamp": "2026-07-10T16:00+05:30",
-      "temp": 28.3,
+      "temp": 24.3,
       "precipitation_probability": 62,
       "precipitation": 0.3,
-      "humidity": 59,
+      "humidity": 74,
       "wind_speed": 16.6
     },
     {
       "timestamp": "2026-07-10T17:00+05:30",
-      "temp": 28.0,
+      "temp": 23.6,
       "precipitation_probability": 67,
       "precipitation": 0.3,
-      "humidity": 61,
+      "humidity": 79,
       "wind_speed": 16.0
     },
     {
       "timestamp": "2026-07-10T18:00+05:30",
-      "temp": 27.3,
+      "temp": 23.1,
       "precipitation_probability": 65,
       "precipitation": 0.1,
-      "humidity": 63,
+      "humidity": 81,
       "wind_speed": 15.5
     },
     {
       "timestamp": "2026-07-10T19:00+05:30",
-      "temp": 26.2,
+      "temp": 22.7,
       "precipitation_probability": 58,
       "precipitation": 0.1,
-      "humidity": 66,
+      "humidity": 82,
       "wind_speed": 15.2
     },
     {
       "timestamp": "2026-07-10T20:00+05:30",
-      "temp": 25.0,
+      "temp": 22.3,
       "precipitation_probability": 50,
       "precipitation": 0.1,
-      "humidity": 70,
+      "humidity": 83,
       "wind_speed": 15.0
     },
     {
       "timestamp": "2026-07-10T21:00+05:30",
-      "temp": 23.8,
+      "temp": 22.1,
       "precipitation_probability": 41,
       "precipitation": 0.1,
-      "humidity": 75,
+      "humidity": 83,
       "wind_speed": 14.9
     },
     {
       "timestamp": "2026-07-10T22:00+05:30",
-      "temp": 22.7,
+      "temp": 21.8,
       "precipitation_probability": 31,
       "precipitation": 0.1,
-      "humidity": 78,
+      "humidity": 83,
       "wind_speed": 14.8
     },
     {
       "timestamp": "2026-07-10T23:00+05:30",
-      "temp": 21.9,
+      "temp": 21.6,
       "precipitation_probability": 22,
       "precipitation": 0.1,
-      "humidity": 82,
+      "humidity": 83,
       "wind_speed": 14.8
     }
   ],
   "daily": [
     {
       "date": "2026-07-04",
-      "temp_max": 27.8,
+      "temp_max": 27.6,
       "temp_min": 21.1,
       "precipitation_sum": 5.3,
       "precipitation_probability_max": 69,
@@ -1368,7 +1368,7 @@
     },
     {
       "date": "2026-07-05",
-      "temp_max": 26.9,
+      "temp_max": 27.2,
       "temp_min": 20.8,
       "precipitation_sum": 0.8,
       "precipitation_probability_max": 59,
@@ -1377,8 +1377,8 @@
     },
     {
       "date": "2026-07-06",
-      "temp_max": 29.2,
-      "temp_min": 20.0,
+      "temp_max": 30.1,
+      "temp_min": 20.1,
       "precipitation_sum": 1.5,
       "precipitation_probability_max": 93,
       "uv_index_max": 4.35,
@@ -1386,8 +1386,8 @@
     },
     {
       "date": "2026-07-07",
-      "temp_max": 28.7,
-      "temp_min": 20.9,
+      "temp_max": 29.8,
+      "temp_min": 21.0,
       "precipitation_sum": 1.3,
       "precipitation_probability_max": 83,
       "uv_index_max": 6.25,
@@ -1395,8 +1395,8 @@
     },
     {
       "date": "2026-07-08",
-      "temp_max": 29.3,
-      "temp_min": 21.0,
+      "temp_max": 27.2,
+      "temp_min": 21.2,
       "precipitation_sum": 0.3,
       "precipitation_probability_max": 67,
       "uv_index_max": 5.3,
@@ -1404,8 +1404,8 @@
     },
     {
       "date": "2026-07-09",
-      "temp_max": 27.7,
-      "temp_min": 21.5,
+      "temp_max": 29.8,
+      "temp_min": 21.1,
       "precipitation_sum": 1.2,
       "precipitation_probability_max": 67,
       "uv_index_max": 8.1,
@@ -1413,8 +1413,8 @@
     },
     {
       "date": "2026-07-10",
-      "temp_max": 28.5,
-      "temp_min": 20.0,
+      "temp_max": 28.1,
+      "temp_min": 20.6,
       "precipitation_sum": 2.4,
       "precipitation_probability_max": 67,
       "uv_index_max": 8.05,
