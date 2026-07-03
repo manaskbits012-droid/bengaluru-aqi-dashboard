@@ -43,6 +43,7 @@ def fetch():
 
 
 def append_row(row):
+    os.makedirs(os.path.dirname(HISTORY_PATH), exist_ok=True)
     file_exists = os.path.isfile(HISTORY_PATH)
     with open(HISTORY_PATH, "a", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=FIELDS)
