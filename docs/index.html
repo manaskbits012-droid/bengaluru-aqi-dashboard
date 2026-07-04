@@ -8,7 +8,14 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="wrap">
+
+<div id="intro" class="intro" aria-hidden="true">
+  <div class="intro-orbit"><div class="intro-dot"></div><div class="intro-ring"></div></div>
+  <div class="intro-title">BENGALURU</div>
+  <div class="intro-sub">WEATHER INSTRUMENT</div>
+</div>
+
+<div class="wrap" id="app">
 
   <div class="topbar">
     <div class="brand">
@@ -21,83 +28,136 @@
     </div>
   </div>
 
-  <section class="panel" aria-label="Current conditions">
-    <div class="ticker" id="ticker">
-      <div class="tick"><div class="skel skel-line" style="width:70%"></div><div class="skel skel-line" style="width:50%"></div></div>
-    </div>
-    <p class="panel-note" id="ticker-meta"></p>
-  </section>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab-btn active" data-tab="now" role="tab" aria-selected="true" aria-controls="tab-now" type="button">
+      <span class="tab-num">01</span>Now
+    </button>
+    <button class="tab-btn" data-tab="forecast" role="tab" aria-selected="false" aria-controls="tab-forecast" type="button">
+      <span class="tab-num">02</span>Forecast
+    </button>
+    <button class="tab-btn" data-tab="trends" role="tab" aria-selected="false" aria-controls="tab-trends" type="button">
+      <span class="tab-num">03</span>Trends &amp; Records
+    </button>
+    <button class="tab-btn" data-tab="wind" role="tab" aria-selected="false" aria-controls="tab-wind" type="button">
+      <span class="tab-num">04</span>Wind &amp; Air
+    </button>
+  </nav>
 
-  <section class="panel">
-    <div class="panel-head">
-      <h2 class="eyebrow">24H Temperature — Today / Yesterday / Normal</h2>
-      <span class="panel-note" id="today-chart-note"></span>
-    </div>
-    <div class="box"><div id="chart-today" class="chart-wrap"></div></div>
-  </section>
-
-  <section class="panel">
-    <div class="panel-head">
-      <h2 class="eyebrow">Trends</h2>
-      <div class="seg" role="tablist" aria-label="Trend range">
-        <button data-range="7" class="active" role="tab" aria-selected="true" type="button">7D</button>
-        <button data-range="30" role="tab" aria-selected="false" type="button">30D</button>
+  <main>
+    <!-- ============ NOW ============ -->
+    <section class="tab-panel active" id="tab-now" role="tabpanel">
+      <div class="hero-card" id="hero-card">
+        <div class="hero-icon" id="hero-icon"></div>
+        <div class="hero-main">
+          <div class="hero-temp"><span class="num" id="hero-temp">--</span><span class="hero-deg">°C</span></div>
+          <div class="hero-condition" id="hero-condition">Loading…</div>
+          <div class="hero-feels" id="hero-feels"></div>
+        </div>
+        <div class="hero-meta">
+          <div id="hero-updated">—</div>
+          <div id="hero-range">—</div>
+        </div>
       </div>
-    </div>
-    <div class="grid-4" id="trend-grid"></div>
-  </section>
 
-  <section class="panel">
-    <div class="panel-head">
-      <h2 class="eyebrow">48-Hour Forecast</h2>
-      <span class="panel-note">Hourly, Asia/Kolkata</span>
-    </div>
-    <div class="table-scroll">
-      <table class="instrument" id="forecast-table">
-        <caption>Hourly forecast for the next 48 hours: temperature, feels-like, rain probability and amount, wind, humidity, pressure.</caption>
-        <thead>
-          <tr>
-            <th scope="col">Time</th>
-            <th scope="col">Temp °C</th>
-            <th scope="col">Feels °C</th>
-            <th scope="col">Rain %</th>
-            <th scope="col">Rain mm</th>
-            <th scope="col">Wind km/h</th>
-            <th scope="col">Hum %</th>
-            <th scope="col">Pres hPa</th>
-          </tr>
-        </thead>
-        <tbody id="forecast-tbody"></tbody>
-      </table>
-    </div>
-  </section>
+      <div class="stat-grid" id="now-stats"></div>
 
-  <div class="grid-2">
-    <section class="panel">
-      <h2 class="eyebrow">Records &amp; Percentiles</h2>
-      <div class="box" id="records-box"></div>
+      <div class="grid-2 spaced">
+        <div class="panel-card" id="sun-card">
+          <h3 class="eyebrow">Sun &amp; Moon</h3>
+          <div id="sun-body"></div>
+        </div>
+        <div class="panel-card" id="aqi-card">
+          <h3 class="eyebrow">Air Quality</h3>
+          <div id="aqi-body"></div>
+        </div>
+      </div>
     </section>
-    <section class="panel">
-      <h2 class="eyebrow">Rainfall Accounting</h2>
-      <div class="box" id="rainfall-box"></div>
-    </section>
-  </div>
 
-  <div class="grid-2">
-    <section class="panel">
-      <h2 class="eyebrow">Calendar — Daily Mean Temperature</h2>
-      <div class="box"><div id="calendar-box"></div></div>
-    </section>
-    <section class="panel">
-      <h2 class="eyebrow">Wind Rose — Last 7 Days</h2>
-      <div class="box"><div id="windrose-box"></div></div>
-    </section>
-  </div>
+    <!-- ============ FORECAST ============ -->
+    <section class="tab-panel" id="tab-forecast" role="tabpanel" hidden>
+      <div class="panel-card">
+        <div class="panel-head">
+          <h2 class="eyebrow">24H Temperature — Today / Yesterday / Normal</h2>
+          <span class="panel-note" id="today-chart-note"></span>
+        </div>
+        <div id="chart-today" class="chart-wrap"></div>
+      </div>
 
-  <section class="panel">
-    <h2 class="eyebrow">Comfort &amp; Derived Metrics</h2>
-    <div class="grid-3" id="comfort-grid"></div>
-  </section>
+      <div class="panel-card">
+        <div class="panel-head">
+          <h2 class="eyebrow">48-Hour Forecast</h2>
+          <span class="panel-note">Hourly, Asia/Kolkata</span>
+        </div>
+        <div class="table-scroll">
+          <table class="instrument" id="forecast-table">
+            <caption>Hourly forecast for the next 48 hours: temperature, feels-like, rain probability and amount, wind, humidity, pressure.</caption>
+            <thead>
+              <tr>
+                <th scope="col">Time</th>
+                <th scope="col">Temp °C</th>
+                <th scope="col">Feels °C</th>
+                <th scope="col">Rain %</th>
+                <th scope="col">Rain mm</th>
+                <th scope="col">Wind km/h</th>
+                <th scope="col">Hum %</th>
+                <th scope="col">Pres hPa</th>
+              </tr>
+            </thead>
+            <tbody id="forecast-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TRENDS & RECORDS ============ -->
+    <section class="tab-panel" id="tab-trends" role="tabpanel" hidden>
+      <div class="panel-card">
+        <div class="panel-head">
+          <h2 class="eyebrow">Trends</h2>
+          <div class="seg" role="tablist" aria-label="Trend range">
+            <button data-range="7" class="active" role="tab" aria-selected="true" type="button">7D</button>
+            <button data-range="30" role="tab" aria-selected="false" type="button">30D</button>
+          </div>
+        </div>
+        <div class="grid-4" id="trend-grid"></div>
+      </div>
+
+      <div class="grid-2 spaced">
+        <div class="panel-card">
+          <h2 class="eyebrow">Records &amp; Percentiles</h2>
+          <div id="records-box"></div>
+        </div>
+        <div class="panel-card">
+          <h2 class="eyebrow">Rainfall Accounting</h2>
+          <div id="rainfall-box"></div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <h2 class="eyebrow">Calendar — Daily Mean Temperature</h2>
+        <div id="calendar-box"></div>
+      </div>
+    </section>
+
+    <!-- ============ WIND & AIR ============ -->
+    <section class="tab-panel" id="tab-wind" role="tabpanel" hidden>
+      <div class="grid-2 spaced">
+        <div class="panel-card">
+          <h2 class="eyebrow">Wind Rose — Last 7 Days</h2>
+          <div id="windrose-box"></div>
+        </div>
+        <div class="panel-card">
+          <h2 class="eyebrow">Air Quality Detail</h2>
+          <div id="aqi-detail-box"></div>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <h2 class="eyebrow">Comfort &amp; Derived Metrics</h2>
+        <div class="grid-3" id="comfort-grid"></div>
+      </div>
+    </section>
+  </main>
 
   <footer id="footer"></footer>
 </div>

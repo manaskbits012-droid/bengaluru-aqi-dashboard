@@ -138,7 +138,7 @@ function percentileRank(value, arr) {
 async function fetchForecast() {
   const url = `${FORECAST_URL}?latitude=${LAT}&longitude=${LON}&timezone=${encodeURIComponent(TZ)}` +
     `&past_days=30&forecast_days=3` +
-    `&current=temperature_2m,relative_humidity_2m,apparent_temperature,dew_point_2m,pressure_msl,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover,uv_index,precipitation,weather_code` +
+    `&current=temperature_2m,relative_humidity_2m,apparent_temperature,dew_point_2m,pressure_msl,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover,uv_index,precipitation,weather_code,is_day` +
     `&hourly=temperature_2m,apparent_temperature,dew_point_2m,relative_humidity_2m,pressure_msl,wind_speed_10m,wind_gusts_10m,wind_direction_10m,cloud_cover,uv_index,precipitation,precipitation_probability,visibility,weather_code` +
     `&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,sunrise,sunset,uv_index_max,wind_speed_10m_max,wind_direction_10m_dominant,weather_code`;
   return fetchJSON(url);
@@ -205,24 +205,94 @@ function mergeDailyMaps(archiveDaily, hourlyDerived) {
 /* ============================== APP STATE ============================== */
 const state = { forecast: null, aq: null, historicalDaily: null, lastLoad: null, nowHourlyIdx: null };
 
-/* ============================== TICKER ============================== */
-const TICKER_SPEC = [
-  { key: "temp", label: "TEMPERATURE" },
-  { key: "feels", label: "FEELS LIKE" },
-  { key: "dew", label: "DEW POINT" },
-  { key: "humidity", label: "HUMIDITY" },
-  { key: "pressure", label: "PRESSURE" },
-  { key: "wind", label: "WIND" },
-  { key: "gust", label: "GUSTS" },
-  { key: "visibility", label: "VISIBILITY" },
-  { key: "cloud", label: "CLOUD COVER" },
-  { key: "uv", label: "UV INDEX" },
-  { key: "precip", label: "PRECIPITATION" },
-  { key: "aqi", label: "AIR QUALITY" },
-  { key: "pollutants", label: "POLLUTANTS" },
-  { key: "sun", label: "SUN" },
-  { key: "moon", label: "MOON" },
-];
+/* ============================== WEATHER ICONS ============================== */
+// Hand-drawn SVG icons (no emoji, no icon font) so sizing/color are fully controlled and
+// consistent with the rest of the instrument. Grouped elements pick up CSS keyframe animations
+// (spin/drift/fall/flash) defined in style.css; prefers-reduced-motion disables all of them.
+function cloudPath() {
+  return `<g class="cloud" fill="currentColor" opacity="0.95">
+    <rect x="16" y="56" width="66" height="26" rx="13"/>
+    <circle cx="36" cy="52" r="17"/>
+    <circle cx="58" cy="45" r="21"/>
+    <circle cx="77" cy="55" r="14"/>
+  </g>`;
+}
+function sunGroup(r, opacity) {
+  return `<g class="sun-rays" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" opacity="${opacity}">
+      <line x1="50" y1="6" x2="50" y2="18"/><line x1="50" y1="82" x2="50" y2="94"/>
+      <line x1="6" y1="50" x2="18" y2="50"/><line x1="82" y1="50" x2="94" y2="50"/>
+      <line x1="19" y1="19" x2="28" y2="28"/><line x1="72" y1="72" x2="81" y2="81"/>
+      <line x1="19" y1="81" x2="28" y2="72"/><line x1="72" y1="28" x2="81" y2="19"/>
+    </g>
+    <circle class="sun-core" cx="50" cy="50" r="${r}" fill="currentColor" opacity="${opacity}"/>`;
+}
+function crescentPath(opacity) {
+  return `<path d="M62,14 A34,34 0 1 0 62,86 A25,25 0 1 1 62,14 Z" fill="currentColor" opacity="${opacity}"/>
+    <circle cx="22" cy="30" r="2" fill="currentColor" opacity="${opacity * 0.8}"/>
+    <circle cx="14" cy="48" r="1.3" fill="currentColor" opacity="${opacity * 0.6}"/>`;
+}
+function rainDrops(n) {
+  const xs = [30, 44, 58, 72].slice(0, n);
+  return xs.map((x, i) => `<line class="rain-drop" x1="${x}" y1="80" x2="${x - 4}" y2="92" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" style="animation-delay:${i * 0.18}s"/>`).join("");
+}
+function boltPath() {
+  return `<polygon class="bolt" points="55,58 42,58 50,78 38,78 62,50 52,50 60,34" fill="#ffd54a"/>`;
+}
+function fogLines() {
+  return [40, 56, 72].map((y, i) => `<line class="fog-line" x1="14" y1="${y}" x2="86" y2="${y}" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" opacity="${0.9 - i * 0.15}" style="animation-delay:${i * 0.3}s"/>`).join("");
+}
+
+function weatherIconSVG(code, isDay) {
+  let inner;
+  if (code === 0 || code === 1) {
+    inner = isDay ? sunGroup(20, 1) : crescentPath(1);
+  } else if (code === 2) {
+    inner = (isDay ? sunGroup(15, 0.9) : crescentPath(0.9)) + `<g transform="translate(6,10) scale(0.82)">${cloudPath()}</g>`;
+  } else if (code === 3) {
+    inner = `<g class="cloud-back" fill="currentColor" opacity="0.5" transform="translate(-8,-14) scale(0.7)">${cloudPath().replace('class="cloud"', '')}</g>${cloudPath()}`;
+  } else if (code === 45 || code === 48) {
+    inner = `<g transform="translate(0,-10) scale(0.85)" opacity="0.85">${cloudPath()}</g>${fogLines()}`;
+  } else if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) {
+    const heavy = [65, 67, 82].includes(code);
+    inner = `${cloudPath()}${rainDrops(heavy ? 4 : 3)}`;
+  } else if ([71, 73, 75, 77, 85, 86].includes(code)) {
+    inner = `${cloudPath()}<g fill="currentColor">
+      <circle class="rain-drop" cx="34" cy="84" r="2.4"/><circle class="rain-drop" cx="50" cy="90" r="2.4" style="animation-delay:.3s"/><circle class="rain-drop" cx="66" cy="84" r="2.4" style="animation-delay:.6s"/>
+    </g>`;
+  } else if ([95, 96, 99].includes(code)) {
+    inner = `${cloudPath()}${boltPath()}`;
+  } else {
+    inner = isDay ? sunGroup(20, 1) : crescentPath(1);
+  }
+  return `<svg class="w-icon" viewBox="0 0 100 100" width="100%" height="100%" aria-hidden="true">${inner}</svg>`;
+}
+
+function weatherConditionLabel(code) {
+  const map = {
+    0: "Clear sky", 1: "Mostly clear", 2: "Partly cloudy", 3: "Overcast",
+    45: "Fog", 48: "Depositing fog",
+    51: "Light drizzle", 53: "Drizzle", 55: "Dense drizzle",
+    56: "Freezing drizzle", 57: "Freezing drizzle",
+    61: "Light rain", 63: "Rain", 65: "Heavy rain",
+    66: "Freezing rain", 67: "Freezing rain",
+    71: "Light snow", 73: "Snow", 75: "Heavy snow", 77: "Snow grains",
+    80: "Rain showers", 81: "Rain showers", 82: "Violent showers",
+    85: "Snow showers", 86: "Snow showers",
+    95: "Thunderstorm", 96: "Thunderstorm, hail", 99: "Thunderstorm, hail",
+  };
+  return map[code] || "—";
+}
+
+// Time-of-day bucket, for the hero gradient — purely presentational, computed from sunrise/sunset.
+function timeOfDay(now, sunrise, sunset) {
+  const TWILIGHT_MIN = 40;
+  const t = now.getTime();
+  const sr = sunrise.getTime(), ss = sunset.getTime();
+  if (Math.abs(t - sr) <= TWILIGHT_MIN * 60000) return "dawn";
+  if (Math.abs(t - ss) <= TWILIGHT_MIN * 60000) return "dusk";
+  if (t > sr && t < ss) return "day";
+  return "night";
+}
 
 function todayDailyIndex(daily) {
   const idx = daily.time.indexOf(isoDate(new Date()));
@@ -255,95 +325,173 @@ function pressureTrend(hourly, idx) {
   return { dir: "steady", delta };
 }
 
-function renderTicker() {
-  const root = $("#ticker");
-  root.innerHTML = "";
+function statCard(label, valueHTML, subHTML) {
+  const d = el("div", "stat-card");
+  d.appendChild(el("div", "s-label", label));
+  const v = el("div", "s-value num");
+  v.innerHTML = valueHTML;
+  d.appendChild(v);
+  if (subHTML) {
+    const s = el("div", "s-sub");
+    s.innerHTML = subHTML;
+    d.appendChild(s);
+  }
+  return d;
+}
+
+function renderHero() {
   const { current, hourly, daily } = state.forecast;
   const idx = state.nowHourlyIdx;
-  const aq = state.aq ? state.aq.current : null;
+  const todayIdx = todayDailyIndex(daily);
+  const sunrise = new Date(daily.sunrise[todayIdx]), sunset = new Date(daily.sunset[todayIdx]);
+  const tod = timeOfDay(new Date(current.time), sunrise, sunset);
 
-  const blocks = {};
+  const card = $("#hero-card");
+  card.className = "hero-card tod-" + tod;
+  $("#hero-icon").innerHTML = weatherIconSVG(current.weather_code, current.is_day);
+  $("#hero-temp").textContent = fmt(current.temperature_2m, 1);
+  $("#hero-condition").textContent = weatherConditionLabel(current.weather_code);
+  $("#hero-feels").textContent = `Feels like ${fmt(current.apparent_temperature, 1)}°C · Dew point ${fmt(current.dew_point_2m, 1)}°C`;
 
-  function block(spec, valueHTML, subHTML) {
-    const d = el("div", "tick");
-    d.appendChild(el("div", "t-label", spec.label));
-    const v = el("div", "t-value num");
-    v.innerHTML = valueHTML;
-    d.appendChild(v);
-    if (subHTML) {
-      const s = el("div", "t-sub");
-      s.innerHTML = subHTML;
-      d.appendChild(s);
-    }
-    root.appendChild(d);
-    blocks[spec.key] = v;
-  }
-
+  const weatherTime = new Date(current.time).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  $("#hero-updated").textContent = `AS OF ${weatherTime}`;
   const r24temp = last24hRange(hourly, idx, "temperature_2m");
-  block(TICKER_SPEC[0], `${fmt(current.temperature_2m, 1)}<span class="unit">°C</span>`,
-    r24temp ? `24H ${fmt(r24temp.min, 1)}–${fmt(r24temp.max, 1)}°C` : "");
+  $("#hero-range").textContent = r24temp ? `24H ${fmt(r24temp.min, 1)}–${fmt(r24temp.max, 1)}°C` : "";
+}
 
-  block(TICKER_SPEC[1], `${fmt(current.apparent_temperature, 1)}<span class="unit">°C</span>`, "APPARENT TEMP");
+function renderNowStats() {
+  const { current, hourly, daily } = state.forecast;
+  const idx = state.nowHourlyIdx;
+  const todayIdx = todayDailyIndex(daily);
+  const grid = $("#now-stats");
+  grid.innerHTML = "";
 
-  block(TICKER_SPEC[2], `${fmt(current.dew_point_2m, 1)}<span class="unit">°C</span>`, "DEW POINT");
+  grid.appendChild(statCard("Dew Point", `${fmt(current.dew_point_2m, 1)}<span class="unit">°C</span>`, "Condensation threshold"));
 
   const r24hum = last24hRange(hourly, idx, "relative_humidity_2m");
-  block(TICKER_SPEC[3], `${fmt(current.relative_humidity_2m, 0)}<span class="unit">%</span>`,
-    r24hum ? `24H ${fmt(r24hum.min, 0)}–${fmt(r24hum.max, 0)}%` : "");
+  grid.appendChild(statCard("Humidity", `${fmt(current.relative_humidity_2m, 0)}<span class="unit">%</span>`,
+    r24hum ? `24H range ${fmt(r24hum.min, 0)}–${fmt(r24hum.max, 0)}%` : ""));
 
   const pt = pressureTrend(hourly, idx);
   const arrowGlyph = pt.dir === "rising" ? "▲" : pt.dir === "falling" ? "▼" : "→";
   const arrowClass = pt.dir === "rising" ? "up" : pt.dir === "falling" ? "down" : "";
-  block(TICKER_SPEC[4], `${fmt(current.pressure_msl, 1)}<span class="unit">hPa</span><span class="arrow ${arrowClass}">${arrowGlyph}</span>`,
-    `3H ${pt.dir.toUpperCase()} ${fmt(Math.abs(pt.delta), 1)}`);
+  grid.appendChild(statCard("Pressure", `${fmt(current.pressure_msl, 1)}<span class="unit">hPa</span><span class="arrow ${arrowClass}">${arrowGlyph}</span>`,
+    `3h trend: <span class="accent">${pt.dir}</span> ${fmt(Math.abs(pt.delta), 1)} hPa`));
 
-  const windArrow = `<svg class="vec" width="12" height="12" viewBox="0 0 12 12" style="transform:rotate(${current.wind_direction_10m}deg)"><path d="M6 1 L9 8 L6 6 L3 8 Z" fill="currentColor"/></svg>`;
-  block(TICKER_SPEC[5], `${fmt(current.wind_speed_10m, 1)}<span class="unit">km/h</span>${windArrow}`,
-    `FROM ${fmt(current.wind_direction_10m, 0)}° ${degToCompass(current.wind_direction_10m)}`);
-
-  block(TICKER_SPEC[6], `${fmt(current.wind_gusts_10m, 1)}<span class="unit">km/h</span>`, "PEAK GUST");
+  const windArrow = `<svg class="vec" width="14" height="14" viewBox="0 0 12 12" style="transform:rotate(${current.wind_direction_10m}deg)"><path d="M6 1 L9 8 L6 6 L3 8 Z" fill="currentColor"/></svg>`;
+  grid.appendChild(statCard("Wind", `${fmt(current.wind_speed_10m, 1)}<span class="unit">km/h</span>${windArrow}`,
+    `From ${fmt(current.wind_direction_10m, 0)}° ${degToCompass(current.wind_direction_10m)} · gusts ${fmt(current.wind_gusts_10m, 1)} km/h`));
 
   const vis = hourly.visibility[idx];
-  block(TICKER_SPEC[7], vis != null ? `${fmt(vis / 1000, 1)}<span class="unit">km</span>` : "—", "");
+  grid.appendChild(statCard("Visibility", vis != null ? `${fmt(vis / 1000, 1)}<span class="unit">km</span>` : "—", "Cloud cover " + fmt(current.cloud_cover, 0) + "%"));
 
-  block(TICKER_SPEC[8], `${fmt(current.cloud_cover, 0)}<span class="unit">%</span>`, "");
+  grid.appendChild(statCard("UV Index", `${fmt(current.uv_index, 1)}`, `<span class="accent">${uvBand(current.uv_index)}</span>`));
 
-  block(TICKER_SPEC[9], `${fmt(current.uv_index, 1)}`, uvBand(current.uv_index));
-
-  const todayIdx = todayDailyIndex(daily);
   const todayPrecip = daily.precipitation_sum[todayIdx];
   const rainProb = hourly.precipitation_probability[idx];
-  block(TICKER_SPEC[10], `${fmt(current.precipitation, 1)}<span class="unit">mm/hr</span>`,
-    `${fmt(rainProb, 0)}% NEXT HR · TODAY ${fmt(todayPrecip, 1)}mm`);
+  grid.appendChild(statCard("Precipitation", `${fmt(current.precipitation, 1)}<span class="unit">mm/hr</span>`,
+    `${fmt(rainProb, 0)}% chance next hour · ${fmt(todayPrecip, 1)}mm today`));
+}
 
-  if (aq) {
-    block(TICKER_SPEC[11], `${fmt(aq.us_aqi, 0)}`, aqiBand(aq.us_aqi) + ' <span class="accent">US AQI</span>');
-    block(TICKER_SPEC[12], `PM2.5 ${fmt(aq.pm2_5, 0)}`,
-      `PM10 ${fmt(aq.pm10, 0)} · NO2 ${fmt(aq.nitrogen_dioxide, 0)} · O3 ${fmt(aq.ozone, 0)} µg/m³`);
-  } else {
-    block(TICKER_SPEC[11], "—", "AQI FEED UNAVAILABLE");
-    block(TICKER_SPEC[12], "—", "");
-  }
-
+function renderSunCard() {
+  const { current, daily } = state.forecast;
+  const todayIdx = todayDailyIndex(daily);
   const sunrise = new Date(daily.sunrise[todayIdx]), sunset = new Date(daily.sunset[todayIdx]);
   const dayLenMs = sunset - sunrise;
   const dayLenH = Math.floor(dayLenMs / 3600000), dayLenM = Math.round((dayLenMs % 3600000) / 60000);
-  block(TICKER_SPEC[13],
-    `${pad2(sunrise.getHours())}:${pad2(sunrise.getMinutes())}<span class="unit">↑</span> ${pad2(sunset.getHours())}:${pad2(sunset.getMinutes())}<span class="unit">↓</span>`,
-    `DAY LENGTH ${dayLenH}H ${dayLenM}M`);
-
   const moon = moonPhase(new Date());
-  block(TICKER_SPEC[14], moonPhaseSVG(moon.frac, 22), moon.name.toUpperCase());
 
-  const weatherTime = new Date(current.time).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
-  const aqTime = aq ? new Date(state.aq.current.time).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) : null;
-  $("#ticker-meta").textContent = aqTime
-    ? `Weather readings as of ${weatherTime} · air quality as of ${aqTime}, Asia/Kolkata`
-    : `Weather readings as of ${weatherTime}, Asia/Kolkata`;
+  const box = $("#sun-body");
+  box.innerHTML = "";
+  const rows = [
+    ["Sunrise", `${pad2(sunrise.getHours())}:${pad2(sunrise.getMinutes())}`],
+    ["Sunset", `${pad2(sunset.getHours())}:${pad2(sunset.getMinutes())}`],
+    ["Day length", `${dayLenH}h ${dayLenM}m`],
+  ];
+  rows.forEach(([k, v]) => {
+    const row = el("div", "kv-row");
+    row.appendChild(el("span", "k", k));
+    row.appendChild(el("span", "v num", v));
+    box.appendChild(row);
+  });
+  const moonRow = el("div", "kv-row");
+  const moonK = el("span", "k");
+  moonK.style.display = "flex"; moonK.style.alignItems = "center"; moonK.style.gap = "8px";
+  moonK.innerHTML = moonPhaseSVG(moon.frac, 20);
+  moonK.appendChild(document.createTextNode("Moon"));
+  moonRow.appendChild(moonK);
+  moonRow.appendChild(el("span", "v", moon.name));
+  box.appendChild(moonRow);
+}
+
+const AQI_COLORS = { good: "#0a8a3a", moderate: "#e0a800", usg: "#e8783f", unhealthy: "#d0362f", vunhealthy: "#8b3fae", hazardous: "#6b1b26" };
+function aqiColorKey(aqi) {
+  if (aqi == null) return null;
+  if (aqi <= 50) return "good";
+  if (aqi <= 100) return "moderate";
+  if (aqi <= 150) return "usg";
+  if (aqi <= 200) return "unhealthy";
+  if (aqi <= 300) return "vunhealthy";
+  return "hazardous";
+}
+
+function renderAqiCard() {
+  const box = $("#aqi-body");
+  box.innerHTML = "";
+  const aq = state.aq ? state.aq.current : null;
+  if (!aq) {
+    box.appendChild(el("p", "panel-error", "Air quality feed unavailable — retrying in 60s."));
+    return;
+  }
+  const key = aqiColorKey(aq.us_aqi);
+  const badge = el("div", "aqi-badge num", fmt(aq.us_aqi, 0));
+  badge.style.color = AQI_COLORS[key];
+  box.appendChild(badge);
+  const pill = el("span", "aqi-band-pill", aqiBand(aq.us_aqi));
+  pill.style.background = AQI_COLORS[key];
+  box.appendChild(pill);
+  const sub = el("div", "kv-row");
+  sub.style.marginTop = "14px";
+  sub.appendChild(el("span", "k", "PM2.5"));
+  sub.appendChild(el("span", "v num", fmt(aq.pm2_5, 0) + " µg/m³"));
+  box.appendChild(sub);
+}
+
+function renderAqiDetail() {
+  const box = $("#aqi-detail-box");
+  box.innerHTML = "";
+  const aq = state.aq ? state.aq.current : null;
+  if (!aq) {
+    box.appendChild(el("p", "panel-error", "Air quality feed unavailable — retrying in 60s."));
+    return;
+  }
+  const key = aqiColorKey(aq.us_aqi);
+  const head = el("div", "kv-row");
+  const badge = el("span", "aqi-badge num", fmt(aq.us_aqi, 0));
+  badge.style.color = AQI_COLORS[key];
+  head.appendChild(badge);
+  const pill = el("span", "aqi-band-pill", aqiBand(aq.us_aqi));
+  pill.style.background = AQI_COLORS[key];
+  head.appendChild(pill);
+  box.appendChild(head);
+
+  [
+    ["PM2.5", aq.pm2_5, "µg/m³"], ["PM10", aq.pm10, "µg/m³"],
+    ["Nitrogen Dioxide (NO₂)", aq.nitrogen_dioxide, "µg/m³"], ["Sulphur Dioxide (SO₂)", aq.sulphur_dioxide, "µg/m³"],
+    ["Ozone (O₃)", aq.ozone, "µg/m³"], ["Carbon Monoxide (CO)", aq.carbon_monoxide, "µg/m³"],
+  ].forEach(([label, val, unit]) => {
+    const row = el("div", "kv-row");
+    row.appendChild(el("span", "k", label));
+    row.appendChild(el("span", "v num", fmt(val, 1) + " " + unit));
+    box.appendChild(row);
+  });
+  const note = el("p", "panel-note", "Source: Open-Meteo Air Quality API — a modeled (CAMS) estimate, not a ground-station reading.");
+  note.style.marginTop = "12px";
+  box.appendChild(note);
 }
 
 function flashUpdated() {
-  document.querySelectorAll(".t-value").forEach((v) => {
+  document.querySelectorAll(".s-value, .hero-temp").forEach((v) => {
     v.classList.add("fade");
     setTimeout(() => v.classList.remove("fade"), 320);
   });
@@ -931,11 +1079,17 @@ function renderFooter() {
 /* ============================== LOAD / ORCHESTRATION ============================== */
 async function loadAll(isRefresh) {
   if (!isRefresh) {
+    $("#now-stats").innerHTML = Array(6).fill('<div class="stat-card"><div class="skel skel-line" style="width:50%"></div><div class="skel skel-line" style="width:70%;height:24px"></div></div>').join("");
+    $("#sun-body").innerHTML = '<div class="skel skel-line"></div><div class="skel skel-line"></div><div class="skel skel-line"></div>';
+    $("#aqi-body").innerHTML = '<div class="skel skel-line" style="width:40%;height:30px"></div>';
     $("#chart-today").innerHTML = '<div class="skel skel-block"></div>';
     $("#trend-grid").innerHTML = Array(4).fill('<div class="box"><div class="skel skel-line" style="width:60%"></div><div class="skel skel-block"></div></div>').join("");
     $("#forecast-tbody").innerHTML = "";
     $("#records-box").innerHTML = '<div class="skel skel-line"></div><div class="skel skel-line"></div><div class="skel skel-line"></div>';
     $("#rainfall-box").innerHTML = '<div class="skel skel-line"></div><div class="skel skel-block" style="height:60px"></div>';
+    $("#windrose-box").innerHTML = '<div class="skel skel-block" style="height:220px"></div>';
+    $("#aqi-detail-box").innerHTML = '<div class="skel skel-line"></div><div class="skel skel-line"></div><div class="skel skel-line"></div>';
+    $("#comfort-grid").innerHTML = Array(3).fill('<div class="box"><div class="skel skel-line" style="height:30px"></div></div>').join("");
   }
   setStatus("Refreshing…");
 
@@ -947,6 +1101,9 @@ async function loadAll(isRefresh) {
     state.nowHourlyIdx = nearestHourlyIndex(state.forecast.hourly, state.forecast.current.time);
   } else {
     setStatus("Forecast feed unavailable — retrying in 60s", true);
+    $("#hero-condition").textContent = "Forecast feed unavailable";
+    $("#hero-feels").textContent = "Retrying in 60s…";
+    $("#now-stats").innerHTML = '<p class="panel-error">Forecast feed unavailable — retrying in 60s.</p>';
     setTimeout(() => loadAll(true), 60000);
     return;
   }
@@ -971,17 +1128,35 @@ async function loadAll(isRefresh) {
   refreshTimer = setTimeout(() => loadAll(true), REFRESH_MS);
 }
 
-function render(isRefresh) {
-  renderTicker();
-  if (isRefresh) flashUpdated();
+function renderNowTab() {
+  renderHero();
+  renderNowStats();
+  renderSunCard();
+  renderAqiCard();
+}
+function renderForecastTab() {
   renderTodayChart();
-  renderTrendGrid();
   renderForecastTable();
+}
+function renderTrendsTab() {
+  renderTrendGrid();
   renderRecords();
   renderRainfall();
   renderCalendar();
+}
+function renderWindTab() {
   renderWindRose();
+  renderAqiDetail();
   renderComfort();
+}
+const TAB_RENDERERS = { now: renderNowTab, forecast: renderForecastTab, trends: renderTrendsTab, wind: renderWindTab };
+
+function render(isRefresh) {
+  renderNowTab();
+  renderForecastTab();
+  renderTrendsTab();
+  renderWindTab();
+  if (isRefresh) flashUpdated();
   renderFooter();
 }
 
@@ -1003,7 +1178,7 @@ function initTheme() {
     document.documentElement.setAttribute("data-theme", next);
     localStorage.setItem("theme", next);
     label();
-    render(true);
+    if (state.forecast) render(true);
   });
 }
 
@@ -1015,14 +1190,57 @@ function initTrendToggle() {
       btn.classList.add("active");
       btn.setAttribute("aria-selected", "true");
       trendRange = Number(btn.dataset.range);
-      renderTrendGrid();
+      if (state.forecast) renderTrendGrid();
     });
   });
 }
 
-/* ============================== INIT ============================== */
-window.addEventListener("resize", () => { if (state.forecast) { renderTodayChart(); renderTrendGrid(); renderWindRose(); } });
+/* ============================== TABS ============================== */
+function initTabs() {
+  const buttons = document.querySelectorAll(".tab-btn");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const name = btn.dataset.tab;
+      buttons.forEach((b) => { b.classList.toggle("active", b === btn); b.setAttribute("aria-selected", b === btn ? "true" : "false"); });
+      document.querySelectorAll(".tab-panel").forEach((p) => {
+        const isTarget = p.id === "tab-" + name;
+        p.classList.toggle("active", isTarget);
+        p.hidden = !isTarget;
+      });
+      document.body.dataset.tab = name;
+      if (state.forecast && TAB_RENDERERS[name]) TAB_RENDERERS[name]();
+    });
+  });
+  document.body.dataset.tab = "now";
+}
 
+/* ============================== INTRO ============================== */
+function playIntro() {
+  const intro = $("#intro");
+  const app = $("#app");
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const seen = sessionStorage.getItem("intro_seen");
+  if (reduced || seen) {
+    intro.classList.add("hide");
+    app.classList.add("ready");
+    return;
+  }
+  sessionStorage.setItem("intro_seen", "1");
+  setTimeout(() => {
+    intro.classList.add("hide");
+    app.classList.add("ready");
+  }, 1600);
+}
+
+/* ============================== INIT ============================== */
+window.addEventListener("resize", () => {
+  if (!state.forecast) return;
+  const active = document.body.dataset.tab || "now";
+  if (TAB_RENDERERS[active]) TAB_RENDERERS[active]();
+});
+
+playIntro();
 initTheme();
 initTrendToggle();
+initTabs();
 loadAll(false);

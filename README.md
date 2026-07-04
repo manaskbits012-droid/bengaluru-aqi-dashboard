@@ -6,15 +6,14 @@ A single-city weather and air-quality instrument panel for Bengaluru — statist
 
 ## What it shows
 
-- **Current-conditions ticker** — temperature (actual/feels-like/dew point), humidity, pressure with 3h trend arrow, wind (speed/gusts/direction as degrees + vector arrow), visibility, cloud cover, UV index + band, precipitation (rate/probability/today's accumulation), AQI + individual pollutants, sunrise/sunset/day length, moon phase. Refreshes every 10 minutes with a visible countdown; every value fades briefly on update.
-- **24h chart** — today vs. yesterday vs. the historical normal for this calendar date, three directly-labeled lines.
-- **7-day / 30-day trends** — small-multiples for temperature, rainfall, humidity, and pressure, computed client-side from hourly data.
-- **48-hour forecast table** — dense, semantic `<table>`, zebra rows, sticky time column on mobile.
-- **Records & percentiles** — today's high vs. a 10-year distribution for this calendar date, record high/low for the date, hottest/coldest/wettest day this month and this year, and a plain-stated anomaly vs. seasonal norm.
-- **Rainfall accounting** — month-to-date and year-to-date vs. the 10-year normal for the equivalent period, as bullet charts.
-- **Calendar heatmap** — daily mean temperature for the current month, GitHub-contribution-graph style.
-- **Wind rose** — direction/speed distribution for the last 7 days.
-- **Comfort metrics** — heat index (NWS Rothfusz), wet-bulb temperature (Stull 2011 approximation), and a custom "drying index" — each with its formula labeled so nothing is mistaken for an official index.
+The site is organized into four tabs so each category of data gets room to breathe instead of one dense wall of numbers:
+
+- **Now** — a gradient hero card (color shifts with dawn/day/dusk/night, computed from sunrise/sunset) with a hand-drawn animated weather icon, current temperature, feels-like and dew point; spacious stat cards for humidity, pressure (+3h trend arrow), wind (speed/gusts/direction as degrees + vector arrow), visibility, cloud cover, UV index + band, and precipitation; plus Sun & Moon and Air Quality quick-glance cards. Refreshes every 10 minutes; values fade briefly on update.
+- **Forecast** — 24h chart (today vs. yesterday vs. the historical normal for this calendar date, three directly-labeled lines) and a dense 48-hour hourly table (semantic `<table>`, zebra rows, sticky time column on mobile).
+- **Trends & Records** — 7-day/30-day small-multiples for temperature, rainfall, humidity, and pressure; today's high vs. a 10-year distribution for this calendar date with record high/low, hottest/coldest/wettest day this month and this year, a plain-stated anomaly vs. seasonal norm, month-to-date/year-to-date rainfall vs. normal, and a GitHub-contribution-graph-style calendar heatmap of daily mean temperature.
+- **Wind & Air** — a 7-day wind rose, full pollutant breakdown (PM2.5/PM10/NO2/SO2/O3/CO), and comfort metrics (heat index, wet-bulb temperature, a custom "drying index") — each formula labeled so nothing is mistaken for an official index.
+
+A brief intro animation plays once per browser session before the dashboard fades in (skipped instantly if `prefers-reduced-motion` is set, or on repeat visits within the same session).
 
 ## Data sources & honesty
 
