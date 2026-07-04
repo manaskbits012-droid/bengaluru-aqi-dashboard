@@ -94,7 +94,7 @@ function dryingIndex(tC, dewC, windKmh) {
   return spread * (1 + windKmh / 20);
 }
 
-// Moon phase via synodic month approximation. Returns {frac 0..1, name, glyph}.
+// Moon phase via synodic month approximation. Returns {frac 0..1, name}.
 function moonPhase(date) {
   const synodic = 29.530588853;
   const knownNewMoon = Date.UTC(2000, 0, 6, 18, 14); // 2000-01-06 18:14 UTC
@@ -102,13 +102,30 @@ function moonPhase(date) {
   let frac = (days % synodic) / synodic;
   if (frac < 0) frac += 1;
   const names = [
-    [0.0335, "New Moon", "●"], [0.216, "Waxing Crescent", "🌒"], [0.283, "First Quarter", "🌓"],
-    [0.466, "Waxing Gibbous", "🌔"], [0.533, "Full Moon", "🌕"], [0.716, "Waning Gibbous", "🌖"],
-    [0.783, "Last Quarter", "🌗"], [0.966, "Waning Crescent", "🌘"], [1.001, "New Moon", "●"],
+    [0.0335, "New Moon"], [0.216, "Waxing Crescent"], [0.283, "First Quarter"],
+    [0.466, "Waxing Gibbous"], [0.533, "Full Moon"], [0.716, "Waning Gibbous"],
+    [0.783, "Last Quarter"], [0.966, "Waning Crescent"], [1.001, "New Moon"],
   ];
-  for (const [upto, name, glyph] of names) if (frac <= upto) return { frac, name, glyph };
-  return { frac, name: "New Moon", glyph: "●" };
+  for (const [upto, name] of names) if (frac <= upto) return { frac, name };
+  return { frac, name: "New Moon" };
 }
+
+// Draws the moon's illuminated silhouette as two overlapping circles (no astronomy library,
+// no emoji — emoji moon glyphs render at wildly inconsistent sizes across fonts/platforms and
+// clash with the monochrome instrument aesthetic).
+function moonPhaseSVG(frac, size) {
+  const r = size / 2 - 1.5;
+  const cx = size / 2, cy = size / 2;
+  const illum = (1 - Math.cos(2 * Math.PI * frac)) / 2;
+  const dir = frac < 0.5 ? -1 : 1;
+  const offsetX = dir * 2 * r * illum;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" aria-hidden="true">
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--ink)" stroke="var(--ink-3)" stroke-width="1"/>
+    <circle cx="${cx + offsetX}" cy="${cy}" r="${r}" fill="var(--panel)"/>
+  </svg>`;
+}
+
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
 
 function percentileRank(value, arr) {
   const clean = arr.filter((v) => v != null && !Number.isNaN(v));
@@ -316,7 +333,7 @@ function renderTicker() {
     `DAY LENGTH ${dayLenH}H ${dayLenM}M`);
 
   const moon = moonPhase(new Date());
-  block(TICKER_SPEC[14], `${moon.glyph}`, moon.name.toUpperCase());
+  block(TICKER_SPEC[14], moonPhaseSVG(moon.frac, 22), moon.name.toUpperCase());
 
   const weatherTime = new Date(current.time).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
   const aqTime = aq ? new Date(state.aq.current.time).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" }) : null;
@@ -427,6 +444,8 @@ function drawLineChart(root, opts) {
   svg.appendChild(crosshair);
 
   root.appendChild(svg);
+  svg.classList.add("draw-in");
+  requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.add("shown")));
   const tooltip = el("div", "chart-tooltip");
   root.style.position = "relative";
   root.appendChild(tooltip);
@@ -819,7 +838,7 @@ function renderWindRose() {
     svg.appendChild(t);
   });
 
-  const blues = ["#cfe0fb", "#93b8ef", "#5487dd", var_accent()];
+  const blues = [cssVar("--wind-1"), cssVar("--wind-2"), cssVar("--wind-3"), cssVar("--wind-4")];
   for (let b = 0; b < buckets; b++) {
     let acc = 0;
     const angleStart = (b * (360 / buckets) - 90 - (360 / buckets) / 2) * Math.PI / 180;
@@ -858,7 +877,6 @@ function renderWindRose() {
   wrap.appendChild(legend);
   box.appendChild(wrap);
 }
-function var_accent() { return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#1d4fd6"; }
 
 /* ============================== COMFORT METRICS ============================== */
 function renderComfort() {
